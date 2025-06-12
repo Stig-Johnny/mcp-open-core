@@ -1,4 +1,4 @@
-# fusion/fusion_controller.py
+# MCP Sovereign Fusion Controller — Phase 13 Full Adaptive Execution Build
 
 import os
 import json
@@ -12,6 +12,7 @@ from sector_rotation.rotation_engine import SectorRotationEngine
 from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from datastore.state_logger import StateLogger
+from execution.execution_engine import ExecutionEngine
 
 class FusionController:
     def __init__(self, whale_api_key=None):
@@ -28,6 +29,7 @@ class FusionController:
         self.kill_switch = KillSwitch()
 
         self.logger = StateLogger()
+        self.execution_engine = ExecutionEngine()
         self.adaptive_weights = self.load_adaptive_weights()
 
     def load_adaptive_weights(self):
@@ -80,7 +82,6 @@ class FusionController:
         print("Making Tactical Decisions...")
         decisions = {}
 
-        # Apply adaptive weights
         sentiment_trigger = self.adaptive_weights["sentiment"]
         liquidity_trigger = self.adaptive_weights["liquidity"]
         whale_trigger = self.adaptive_weights["whales"]
@@ -117,6 +118,7 @@ class FusionController:
         print(f"Profit Ladder: {actions['profit_targets']}")
         print("-------------------------\n")
 
+        self.execution_engine.execute(signals)
         self.logger.log_cycle(data, signals, actions["decisions"])
 
 if __name__ == "__main__":
