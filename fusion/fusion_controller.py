@@ -1,4 +1,4 @@
-# MCP Fusion Controller — Phase 24: SIGMA-WAVE Integrated
+# MCP Fusion Controller — Phase 25: Liquidity Corridor AI Fully Integrated
 
 import os
 import json
@@ -8,6 +8,7 @@ from data_ingestion.news_parser import NewsParser
 from whale_monitor.orca_x_engine import OrcaXWhaleForecast
 from liquidity_model.liquidity_core import LiquidityModel
 from liquidity_model.liquidity_pressure import LiquidityPressureCore
+from liquidity_model.liquidity_corridor import LiquidityCorridorAI
 from narrative_engine.narrative_model import NarrativeParser
 from sector_rotation.rotation_engine import SectorRotationEngine
 from risk_management.profit_ladder import ProfitLadder
@@ -30,6 +31,7 @@ class FusionController:
 
         self.liquidity_model = LiquidityModel()
         self.liquidity_pressure_core = LiquidityPressureCore()
+        self.liquidity_corridor = LiquidityCorridorAI()
         self.sigma_wave = SigmaWaveVolatilityEngine()
         self.rotation_engine = SectorRotationEngine()
 
@@ -67,13 +69,16 @@ class FusionController:
         news = self.news_parser.fetch_headlines()
         whale_pressure = self.orca_x.compute_whale_pressure()
         volatility_shock = self.sigma_wave.compute_volatility_shock()
+        corridor_pressure, corridor_breakdown = self.liquidity_corridor.compute_corridor_pressure()
 
         return {
             "market": market,
             "stablecoins": stablecoins,
             "news": news,
             "whale_pressure": whale_pressure,
-            "volatility_shock": volatility_shock
+            "volatility_shock": volatility_shock,
+            "corridor_pressure": corridor_pressure,
+            "corridor_breakdown": corridor_breakdown
         }
 
     def process_signals(self, data):
@@ -89,6 +94,7 @@ class FusionController:
             "liquidity": liquidity_delta,
             "whales": data["whale_pressure"],
             "volatility": data["volatility_shock"],
+            "corridor": data["corridor_pressure"],
             "sectors": sector_scores
         }
 
@@ -115,6 +121,9 @@ class FusionController:
 
         if signals["volatility"] > 0.5:
             decisions["volatility"] = "CAUTION: HIGH VOL"
+
+        if signals["corridor"] < -0.03:
+            decisions["corridor"] = "LIQUIDITY CONTRACTING"
 
         profit_targets = self.profit_ladder.evaluate_profit_targets(1000)
 
