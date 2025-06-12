@@ -1,19 +1,28 @@
-# risk_management/profit_ladder.py
+# MCP Phase 26 — Profit Ladder AI v1.0
 
-"""
-MCP Open Core - Profit Ladder
-Simple scaffold for profit tier calculation.
-"""
+import random
 
 class ProfitLadder:
-    def __init__(self):
-        self.ladder = [1.10, 1.20, 1.30, 1.50]
+    def __init__(self, base_target=1000):
+        self.base_target = base_target
 
-    def evaluate_profit_targets(self, entry_price):
-        targets = [entry_price * target for target in self.ladder]
-        print(f"Profit targets: {targets}")
-        return targets
+    def compute_volatility_adjustment(self, sigma_score):
+        """
+        Adjust profit ladder width based on volatility shocks.
+        """
+        # High sigma → wider ladder, more cautious harvesting
+        adjustment = 1 + min(max(sigma_score, -0.5), 2)
+        return adjustment
 
-if __name__ == "__main__":
-    pl = ProfitLadder()
-    pl.evaluate_profit_targets(1000)
+    def evaluate_profit_targets(self, portfolio_value, sigma_score=0.0):
+        ladder_steps = [1.05, 1.1, 1.2, 1.3, 1.4]
+        adjustment = self.compute_volatility_adjustment(sigma_score)
+
+        profit_targets = []
+        for step in ladder_steps:
+            target = portfolio_value * step * adjustment
+            profit_targets.append(round(target, 2))
+
+        print(f"🎯 Profit Ladder Targets (Volatility Adj): {profit_targets}")
+
+        return profit_targets
