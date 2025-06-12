@@ -10,6 +10,7 @@ from liquidity_model.liquidity_corridor import LiquidityCorridorAI
 from narrative_engine.narrative_model import NarrativeParser
 from narrative_engine.sentiment_engine import SentimentEngine
 from sector_rotation.rotation_engine import SectorRotationEngine
+from fusion.quantum_node import QuantumNodeFusion
 from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from risk_management.alpha_defense import AlphaDefenseShield
@@ -34,6 +35,7 @@ class FusionController:
         self.liquidity_corridor = LiquidityCorridorAI()
         self.sigma_wave = SigmaWaveVolatilityEngine()
         self.rotation_engine = SectorRotationEngine()
+        self.quantum_node = QuantumNodeFusion()
 
         self.profit_ladder = ProfitLadder()
         self.kill_switch = KillSwitch()
@@ -102,35 +104,16 @@ class FusionController:
         }
 
     def decide_actions(self, signals):
-        print("Making Tactical Decisions...")
+        fusion_score = self.quantum_node.compute_fusion_score(signals)
+
         decisions = {}
 
-        sentiment_trigger = self.adaptive_weights["sentiment"]
-        liquidity_trigger = self.adaptive_weights["liquidity"]
-        whale_trigger = self.adaptive_weights["whales"]
-        sector_trigger = self.adaptive_weights["sectors"]
-
-        if signals["sentiment"] > sentiment_trigger:
-            decisions["sentiment"] = "BULLISH"
-
-        if signals["liquidity"] > liquidity_trigger:
-            decisions["liquidity"] = "ACCUMULATE"
-
-        if signals["whales"] > whale_trigger:
-            decisions["whales"] = "LARGE ACCUMULATION"
-
-        for sector, score in signals["sectors"].items():
-            if score > 1.2:
-                decisions[f"rotation_{sector}"] = "ALLOCATE TO SECTOR"
-
-        if signals["volatility"] > 0.5:
-            decisions["volatility"] = "CAUTION: HIGH VOL"
-
-        if signals["corridor"] < -0.03:
-            decisions["corridor"] = "LIQUIDITY CONTRACTING"
-
-        if signals["sentiment_delta"] < -0.3:
-            decisions["sentiment_delta"] = "RISK-OFF SENTIMENT BUILDING"
+        if fusion_score > 3:
+            decisions["FUSION_BIAS"] = "RISK-ON MODE"
+        elif fusion_score < 0:
+            decisions["FUSION_BIAS"] = "DEFENSIVE MODE"
+        else:
+            decisions["FUSION_BIAS"] = "NEUTRAL MONITORING"
 
         profit_targets = self.profit_ladder.evaluate_profit_targets(
             portfolio_value=1000,
@@ -151,7 +134,7 @@ class FusionController:
         signals = self.process_signals(data)
         actions = self.decide_actions(signals)
 
-        print("\n--- MCP Adaptive Fusion Report ---")
+        print("\n--- MCP Quantum Fusion Report ---")
         print(f"Signals: {signals}")
         print(f"Decisions: {actions['decisions']}")
         print(f"Profit Ladder: {actions['profit_targets']}")
