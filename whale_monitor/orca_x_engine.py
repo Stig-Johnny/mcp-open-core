@@ -1,4 +1,4 @@
-# MCP Phase 45 — ORCA-X Whale Liquidity Predictor v2.0
+# MCP Phase 45+47 — ORCA-X Whale Liquidity Predictor v2.0
 
 import random
 
@@ -7,7 +7,7 @@ class OrcaXWhaleForecast:
         self.history_window = 50
 
     def compute_whale_pressure(self):
-        # Simulated netflow in millions USD (placeholder for live blockchain API data)
+        # Simulated netflow in millions USD (placeholder for real blockchain API data)
         netflow_musd = round(random.uniform(-300, 300), 2)
 
         if netflow_musd > 100:
