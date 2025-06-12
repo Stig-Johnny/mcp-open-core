@@ -1,4 +1,4 @@
-# MCP Sovereign Fusion Controller — Phase 13 Full Adaptive Execution Build
+# MCP Sovereign Fusion Controller — Phase 15 Full Execution Build
 
 import os
 import json
@@ -13,9 +13,10 @@ from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from datastore.state_logger import StateLogger
 from execution.execution_engine import ExecutionEngine
+from execution.execution_router import ExecutionRouter
 
 class FusionController:
-    def __init__(self, whale_api_key=None):
+    def __init__(self, whale_api_key=None, binance_api_key=None, binance_api_secret=None):
         self.market_data = MarketDataIngestor()
         self.liquidity_fetcher = LiquidityFetcher()
         self.news_parser = NewsParser()
@@ -30,6 +31,7 @@ class FusionController:
 
         self.logger = StateLogger()
         self.execution_engine = ExecutionEngine()
+        self.execution_router = ExecutionRouter(binance_api_key, binance_api_secret, test_mode=True)
         self.adaptive_weights = self.load_adaptive_weights()
 
     def load_adaptive_weights(self):
@@ -119,9 +121,12 @@ class FusionController:
         print("-------------------------\n")
 
         self.execution_engine.execute(signals)
+        self.execution_router.translate_and_execute(signals)
         self.logger.log_cycle(data, signals, actions["decisions"])
 
 if __name__ == "__main__":
-    WHALE_API_KEY = "INSERT_YOUR_API_KEY"
-    fusion = FusionController(whale_api_key=WHALE_API_KEY)
+    WHALE_API_KEY = "INSERT_YOUR_WHALE_ALERT_API_KEY"
+    BINANCE_API_KEY = "INSERT_YOUR_BINANCE_API_KEY"
+    BINANCE_API_SECRET = "INSERT_YOUR_BINANCE_API_SECRET"
+    fusion = FusionController(whale_api_key=WHALE_API_KEY, binance_api_key=BINANCE_API_KEY, binance_api_secret=BINANCE_API_SECRET)
     fusion.run_cycle()
