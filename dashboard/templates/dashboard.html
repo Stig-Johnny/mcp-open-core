@@ -2,27 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MCP Sovereign Control Tower</title>
+    <title>MCP Live Dashboard</title>
     <style>
-        body { font-family: Arial; background: #101020; color: #ffffff; }
-        h1 { color: #00ffcc; }
-        .box { background: #202030; padding: 20px; margin: 20px; border-radius: 8px; }
+        body { font-family: Arial, sans-serif; background: #181c20; color: #e0e0e0; }
+        .container { max-width: 700px; margin: 40px auto; background: #23272b; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px #0004; }
+        h1 { color: #00ffe7; }
+        .section { margin-bottom: 24px; }
+        .label { color: #aaa; }
+        .value { font-weight: bold; color: #fff; }
+        .posture { font-size: 1.3em; }
+        .risk-on { color: #00ff99; }
+        .defensive { color: #ff4c4c; }
+        .neutral { color: #ffd700; }
+        .orderbook { font-size: 0.95em; }
+        button { background: #00ffe7; color: #181c20; border: none; padding: 8px 18px; border-radius: 5px; font-size: 1em; cursor: pointer; }
+        button:hover { background: #00bfae; }
+        .error { color: #ff4c4c; }
     </style>
+    <script>
+        function refreshData() {
+            fetch('/api/live').then(r => r.json()).then(data => {
+                if (data.error) {
+                    document.getElementById('error').innerText = data.error;
+                    return;
+                }
+                document.getElementById('fusion_score').innerText = data.fusion_signals && data.fusion_signals.fusion_score !== undefined ? data.fusion_signals.fusion_score : 'N/A';
+                document.getElementById('posture').innerText = data.decisions && data.decisions.decisions && data.decisions.decisions.FUSION_BIAS ? data.decisions.decisions.FUSION_BIAS : 'N/A';
+                document.getElementById('market_price').innerText = data.market && data.market.price ? data.market.price : 'N/A';
+                document.getElementById('profit_targets').innerText = data.decisions && data.decisions.profit_targets ? data.decisions.profit_targets.join(', ') : 'N/A';
+                document.getElementById('orderbook').innerText = data.order_book ? JSON.stringify(data.order_book, null, 2) : 'N/A';
+                document.getElementById('error').innerText = '';
+            });
+        }
+    </script>
 </head>
 <body>
-    <h1>MCP Sovereign Control Tower 🚀👑</h1>
-
-    {% if log.timestamp %}
-        <div class="box">
-            <h3>Last Fusion Cycle: {{ log.timestamp }}</h3>
-            <p><b>Market Data:</b> {{ log.data.market }}</p>
-            <p><b>Signals:</b> {{ log.signals }}</p>
-            <p><b>Decisions:</b> {{ log.decisions }}</p>
+    <div class="container">
+        <h1>MCP Live Dashboard</h1>
+        <div class="section">
+            <span class="label">Fusion Score:</span> <span class="value" id="fusion_score">{{ data.fusion_signals.fusion_score if data.fusion_signals and 'fusion_score' in data.fusion_signals else 'N/A' }}</span>
         </div>
-    {% else %}
-        <div class="box">
-            <p>No Fusion Data Available</p>
+        <div class="section">
+            <span class="label">Posture:</span> <span class="value posture" id="posture">{{ data.decisions.decisions.FUSION_BIAS if data.decisions and data.decisions.decisions and 'FUSION_BIAS' in data.decisions.decisions else 'N/A' }}</span>
         </div>
-    {% endif %}
+        <div class="section">
+            <span class="label">Market Price (BTCUSDT):</span> <span class="value" id="market_price">{{ data.market.price if data.market and 'price' in data.market else 'N/A' }}</span>
+        </div>
+        <div class="section">
+            <span class="label">Profit Targets:</span> <span class="value" id="profit_targets">{{ data.decisions.profit_targets|join(', ') if data.decisions and 'profit_targets' in data.decisions else 'N/A' }}</span>
+        </div>
+        <div class="section orderbook">
+            <span class="label">Order Book (Top 5):</span>
+            <pre id="orderbook">{{ data.order_book|tojson(indent=2) if data.order_book else 'N/A' }}</pre>
+        </div>
+        <div class="section">
+            <button onclick="refreshData()">Refresh</button>
+            <span class="error" id="error"></span>
+        </div>
+    </div>
 </body>
 </html>
