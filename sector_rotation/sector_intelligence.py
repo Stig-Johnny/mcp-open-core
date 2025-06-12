@@ -1,34 +1,30 @@
-# MCP Phase 44 — Sector Rotational Intelligence Engine v1.0
+# MCP Phase 49 — Sector Intelligence Engine v2.0
 
 import random
 
 class SectorIntelligence:
     def __init__(self):
         self.sectors = [
-            "L1 Protocols",
-            "L2 Scaling",
-            "DeFi",
-            "AI",
-            "Infrastructure",
-            "Meme Tokens",
-            "NFT & Metaverse",
-            "Privacy Coins"
+            "Layer1", "AI", "DeFi", "Memes", "Underdogs"
         ]
 
     def compute_sector_bias(self):
-        sector_bias = {}
-        overall_rotation_score = 0
+        # Simulated sector rotation scores (placeholder for live capital flow analysis)
+        sector_scores = {sector: round(random.uniform(-1, 1), 3) for sector in self.sectors}
+        dominant_sector = max(sector_scores, key=sector_scores.get)
+        dominant_score = sector_scores[dominant_sector]
 
-        for sector in self.sectors:
-            # Simulate liquidity strength with random value (placeholder for real data)
-            liquidity_inflow = round(random.uniform(-1.0, 1.0), 2)
-            sector_bias[sector] = liquidity_inflow
-            overall_rotation_score += liquidity_inflow
+        if dominant_score > 0.6:
+            rotation_bias = 1  # strong rotation
+        elif dominant_score > 0.2:
+            rotation_bias = 0.5  # mild rotation
+        elif dominant_score < -0.6:
+            rotation_bias = -1  # exit rotation
+        elif dominant_score < -0.2:
+            rotation_bias = -0.5  # mild exit
+        else:
+            rotation_bias = 0  # neutral
 
-        normalized_score = round(overall_rotation_score / len(self.sectors), 3)
+        print(f"📊 Sector Rotation Bias: {rotation_bias} ({dominant_sector})")
 
-        print(f"🔁 Sector Rotation Bias Calculated → Net Score: {normalized_score}")
-        for sector, bias in sector_bias.items():
-            print(f"   {sector}: {bias}")
-
-        return normalized_score
+        return rotation_bias
