@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from adaptive.reinforcement_model import ReinforcementModel
 from core.calibration_engine import CalibrationEngine
 from fusion.fusion_node import FusionNode
@@ -85,6 +85,10 @@ def dashboard():
     </body></html>
     """
     return html
+
+@app.route("/mcp/dashboard", methods=["GET"])
+def mcp_dashboard():
+    return render_template("mcp_dashboard.html")
 
 @app.route("/live", methods=["GET"])
 def live_analytics():

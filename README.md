@@ -94,6 +94,30 @@ python ui/operator_panel.py
 
 ---
 
+## 🖥️ MCP Model Context Protocol Dashboard (Updated UI)
+
+The MCP dashboard now features a modern, high-contrast dark theme for optimal readability and operator experience.
+
+- All form fields, labels, and headings are bright and easy to read.
+- Use the dashboard to view context, discover tools, and invoke actions interactively.
+
+To use:
+1. Start the API server:
+   ```bash
+   python api/quantum_api.py
+   ```
+2. Open your browser and go to: [http://localhost:5051/mcp/dashboard](http://localhost:5051/mcp/dashboard)
+
+Features:
+- View current MCP context (balances, posture, etc.)
+- Discover available tools/actions
+- Invoke actions (e.g., get balances, place orders) via web form
+- See results in real time
+
+You can also access the dashboard from the main index page.
+
+---
+
 ## 🧪 Sovereign Modules Included (Phases 1-82)
 
 - fusion_node.py  
@@ -126,6 +150,51 @@ All installed modules reflect institutional-grade fund architecture.
 Upon full verification, proceed to:
 
 **Phase 83 → Full Sovereign Genesis System Audit**
+
+---
+
+## 🤖 Model Context Protocol (MCP) Endpoints for AI Agent Integration
+
+Your MCP server now supports the Model Context Protocol, enabling direct integration with LLM agents and orchestration frameworks.
+
+### MCP Endpoints
+
+- **`GET /mcp/context`** — Returns current system state (balances, posture, fusion score, biases) in MCP-compliant JSON.
+- **`GET /mcp/tools`** — Lists available tools/actions in a model-friendly schema.
+- **`POST /mcp/action`** — Executes an action/tool (e.g., get balances, place order) with structured JSON input.
+
+#### Example: Get System Context
+```bash
+curl http://localhost:5051/mcp/context | jq
+```
+
+#### Example: List Available Tools
+```bash
+curl http://localhost:5051/mcp/tools | jq
+```
+
+#### Example: Invoke an Action (Get Spot Assets)
+```bash
+curl -X POST http://localhost:5051/mcp/action \
+  -H 'Content-Type: application/json' \
+  -d '{"tool": "get_spot_assets", "parameters": {}}' | jq
+```
+
+#### Example: Place a Spot Order (Test Mode)
+```bash
+curl -X POST http://localhost:5051/mcp/action \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "tool": "place_order",
+    "parameters": {
+      "symbol": "BTCUSDT",
+      "side": "BUY",
+      "quantity": 0.001
+    }
+  }' | jq
+```
+
+> These endpoints make your MCP server compatible with LLM agents, agentic frameworks, and automated trading orchestration tools.
 
 ---
 
