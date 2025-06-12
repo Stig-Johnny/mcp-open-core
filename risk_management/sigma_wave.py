@@ -1,19 +1,22 @@
-# MCP Phase 24 — SIGMA-WAVE v1.0 — Volatility Shock Detection Engine
+# MCP Phase 52 — Sigma-Wave Volatility Engine v1.0
 
 import random
 
 class SigmaWaveVolatilityEngine:
-    def __init__(self, baseline_vol=0.025):
-        self.baseline_volatility = baseline_vol  # example 2.5% daily baseline
-
-    def simulate_volatility_feed(self):
-        simulated_vol = self.baseline_volatility + random.uniform(-0.015, 0.025)
-        return round(simulated_vol, 4)
+    def __init__(self):
+        self.window = 30
 
     def compute_volatility_shock(self):
-        recent_vol = self.simulate_volatility_feed()
-        shock_score = (recent_vol - self.baseline_volatility) / self.baseline_volatility
+        # Simulated volatility model (placeholder for actual ATR / realized vol feeds)
+        volatility_score = round(random.uniform(0, 2), 3)
 
-        print(f"🌪 SIGMA-WAVE → Recent Vol: {recent_vol*100:.2f}% | Shock Score: {round(shock_score,3)}")
+        if volatility_score > 1.5:
+            vol_state = "VOLATILITY EXPANSION"
+        elif volatility_score < 0.5:
+            vol_state = "VOLATILITY COMPRESSION"
+        else:
+            vol_state = "NORMAL RANGE"
 
-        return round(shock_score, 3)
+        print(f"🌊 Sigma-Wave Volatility: {vol_state} ({volatility_score})")
+
+        return volatility_score
