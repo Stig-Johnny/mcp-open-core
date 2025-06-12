@@ -1,37 +1,22 @@
-# MCP Phase 37 — Orbital Sentiment Shock Engine v1.0
+# MCP Phase 47 — Orbital Shock Engine v1.0
 
 import random
 
 class OrbitalShockEngine:
     def __init__(self):
-        self.shock_window = []
-
-    def simulate_sentiment_cluster(self):
-        return round(random.uniform(-1, 1), 2)
-
-    def update_cluster_window(self):
-        new_value = self.simulate_sentiment_cluster()
-        self.shock_window.append(new_value)
-        if len(self.shock_window) > 30:
-            self.shock_window.pop(0)
+        self.window = 100
 
     def compute_shock_signal(self):
-        self.update_cluster_window()
+        # Simulate composite shock risk (placeholder for real multi-layer composite model)
+        composite_shock = round(random.uniform(0, 1), 3)
 
-        if not self.shock_window:
-            return "NEUTRAL"
-
-        max_val = max(self.shock_window)
-        min_val = min(self.shock_window)
-        spread = max_val - min_val
-
-        # Shock Trigger Logic
-        if spread >= 1.8:
-            signal = "HIGH SHOCK WARNING"
-        elif spread >= 1.2:
-            signal = "ELEVATED SHOCK RISK"
+        if composite_shock > 0.85:
+            shock_signal = "HIGH SHOCK WARNING"
+        elif composite_shock > 0.65:
+            shock_signal = "MODERATE SHOCK BUILD-UP"
         else:
-            signal = "STABLE BAND"
+            shock_signal = "STABLE"
 
-        print(f"🌪 Orbital Shock → Spread: {spread:.2f} | Signal: {signal}")
-        return signal
+        print(f"🚨 Orbital Shock Level → {shock_signal} ({composite_shock})")
+
+        return shock_signal
