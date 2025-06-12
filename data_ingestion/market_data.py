@@ -1,23 +1,22 @@
 # data_ingestion/market_data.py
 
-"""
-MCP Open Core - Market Data Ingestion Module
-Pulls basic market price and volume data from exchanges.
-"""
+import requests
 
 class MarketDataIngestor:
-    def __init__(self, source="binance"):
-        self.source = source
+    def __init__(self, base_url="https://api.binance.com"):
+        self.base_url = base_url
 
     def fetch_price(self, symbol="BTCUSDT"):
-        # Placeholder for actual API call
-        print(f"Fetching market price for {symbol} from {self.source}")
+        endpoint = f"/api/v3/ticker/24hr?symbol={symbol}"
+        url = self.base_url + endpoint
+        response = requests.get(url)
+        data = response.json()
         return {
             "symbol": symbol,
-            "price": 123456.78,  # Mock data
-            "volume": 1234.56
+            "price": float(data["lastPrice"]),
+            "volume": float(data["volume"])
         }
 
 if __name__ == "__main__":
     md = MarketDataIngestor()
-    print(md.fetch_price())
+    print(md.fetch_price("BTCUSDT"))
