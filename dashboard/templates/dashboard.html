@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MCP Sovereign Control Tower</title>
+    <style>
+        body { font-family: Arial; background: #101020; color: #ffffff; }
+        h1 { color: #00ffcc; }
+        .box { background: #202030; padding: 20px; margin: 20px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>MCP Sovereign Control Tower 🚀👑</h1>
+
+    {% if log.timestamp %}
+        <div class="box">
+            <h3>Last Fusion Cycle: {{ log.timestamp }}</h3>
+            <p><b>Market Data:</b> {{ log.data.market }}</p>
+            <p><b>Signals:</b> {{ log.signals }}</p>
+            <p><b>Decisions:</b> {{ log.decisions }}</p>
+        </div>
+    {% else %}
+        <div class="box">
+            <p>No Fusion Data Available</p>
+        </div>
+    {% endif %}
+</body>
+</html>
