@@ -1,5 +1,3 @@
-# MCP Fusion Controller — Phase 28: Sentiment Engine Integrated
-
 import os
 import json
 from data_ingestion.market_data import MarketDataIngestor
@@ -121,8 +119,9 @@ class FusionController:
         if signals["whales"] > whale_trigger:
             decisions["whales"] = "LARGE ACCUMULATION"
 
-        if signals["sectors"]["DeFi"] > sector_trigger:
-            decisions["rotation"] = "DEPLOY TO DEFI"
+        for sector, score in signals["sectors"].items():
+            if score > 1.2:
+                decisions[f"rotation_{sector}"] = "ALLOCATE TO SECTOR"
 
         if signals["volatility"] > 0.5:
             decisions["volatility"] = "CAUTION: HIGH VOL"
