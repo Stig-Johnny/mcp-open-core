@@ -1,110 +1,115 @@
-# MCP SOVEREIGN — DEPLOYMENT BOOTSTRAP BLUEPRINT
+# MCP SOVEREIGN — DEPLOYMENT BOOTSTRAP BLUEPRINT (UPDATED)
 
 ---
 
-🚀 MCP Quantum Apex — Sovereign Deployment Architecture
+🚀 MCP Quantum Apex — Sovereign Deployment Architecture (Docker Enabled)
 
-This document provides full sovereign deployment architecture for MCP Genesis operations and future cluster-scale extensions.
+This document provides full sovereign deployment architecture for MCP Genesis operations with Docker containerization fully integrated.
 
 ---
 
 ## 🎯 OBJECTIVE
 
 - Enable institutional-grade secure deployment.
-- Support local, remote server, or full cloud installations.
+- Support both bare metal, Docker, and (future) Kubernetes deployments.
 - Ensure high-availability, sovereign resilience, and fund-level operational standards.
 
 ---
 
 ## 🔧 INITIAL DEPLOYMENT REQUIREMENTS
 
-- Python 3.10+ environment
+- Python 3.10+ (for manual mode)
+- Docker 24+ (for containerized mode)
 - Linux Ubuntu Server or equivalent
-- Minimum 16GB RAM recommended (AI expansion-ready)
-- Stable network connection
+- Minimum 16GB RAM recommended
 - Private GitHub MCP Repo Clone
 
 ---
 
-## ⚙ INSTALLATION STEPS
+## ⚙ INSTALLATION PATHWAYS
+
+### 1️⃣ Native Sovereign Deployment (Non-Docker)
 
 ```bash
-# 1️⃣ Clone MCP Open Core
+# Clone MCP Open Core
 git clone https://github.com/Stig-Johnny/mcp-open-core.git
 
-# 2️⃣ Enter directory
+# Enter directory
 cd mcp-open-core
 
-# 3️⃣ Install dependencies
+# Install dependencies
 pip install flask requests
 
-# 4️⃣ Launch MCP Genesis Mode (sovereign loop active)
+# Launch MCP Genesis Sovereign Loop
 python mcp_genesis.py
 
-# 5️⃣ Launch API Gateway (optional external access)
+# Optional: Launch Operator UI & API Gateway
 python api/quantum_api.py
-
-# 6️⃣ Launch Operator UI (control room)
 python ui/operator_panel.py
-
-# 7️⃣ Launch Simulation Mode (safe training)
-python simulator/full_cycle_simulator.py
 ```
 
 ---
 
-## 🔐 SECURITY RECOMMENDATIONS
+### 2️⃣ Sovereign Docker Deployment (Recommended for Fund-Grade Ops)
+
+#### 🛠 Build Sovereign Docker Image
+
+```bash
+docker build -t mcp-sovereign .
+```
+
+#### 🚀 Run Sovereign Docker Container
+
+```bash
+docker run -p 5000:5000 --name sovereign mcp-sovereign
+```
+
+#### 🔐 Sovereign Docker Benefits
+
+- Full process isolation
+- Easy portability across cloud or local sovereign data centers
+- Simplified CI/CD pipeline compatibility
+
+---
+
+## 🔧 Dockerfile Specification
+
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends gcc && rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 5000
+
+CMD ["python", "mcp_genesis.py"]
+```
+
+---
+
+## 🛡 SECURITY RECOMMENDATIONS
 
 | Layer | Protocol |
 |-------|----------|
-| GitHub Access | Private Repo Only |
-| Server Ports | 5000 (API), internal-only preferred |
-| VPN Access | Enforce sovereign access perimeter |
-| SSH Keys | Disable passwords, keys only |
-| Kill Switch | Always armed live |
-| Sovereign Operator Access | Limited IAM roles |
-| Regular Offsite Backups | Encrypt backups externally |
+| Docker Network | Use internal bridge network |
+| API Keys | Future v2.0 API-key auth recommended |
+| VPN Access | Sovereign perimeter control |
+| SSH Keys | Key-based operator access |
+| Kill Switch | Sovereign recursive defense fully armed |
 
 ---
 
-## 🚀 ADVANCED DEPLOYMENT (Cluster-Ready)
+## 🚀 FUTURE: SOVEREIGN KUBERNETES EXPANSION (Staged)
 
-- Containerize modules via Docker
-- Deploy sovereign services as microservices
-- Kubernetes or Nomad orchestration
-- Isolated kill-switch microservice guardrail
-- Secure off-cluster data lake for whale & narrative feeds
+- Helm Chart Sovereign Deployment (Phase Omega)
+- Sovereign Node Clustering for Whale, Liquidity, Sentiment Layers
+- Full AI Microservices Isolation for MCP Fusion Core
 
 ---
 
-## 🔭 MCP V2.0 CLUSTER PATHWAY
-
-| Expansion Target | Architecture |
-|------------------|--------------|
-| Whale Flow Module | Dedicated ORCA-X node |
-| Liquidity Engine | LPI-360 sovereign liquidity node |
-| Sentiment Overlay | SIGMA-WAVE sentiment node |
-| Global Sovereign Core | Multi-node adaptive cluster |
-
----
-
-## 📊 OPERATIONAL MONITORING
-
-- Sovereign Operator Panel (real-time)
-- External ElasticSearch/Prometheus (optional v2.0+)
-- Auto-flag escalation to secure sovereign ops center
-
----
-
-## ☁ CLOUD DEPLOYMENT OPTIONS
-
-| Provider | Comment |
-|----------|---------|
-| AWS | EKS / Private VPC optimal |
-| Azure | AKS / Sovereign VM clusters |
-| Google Cloud | Sovereign microservices via GKE |
-| Bare Metal | Fully sovereign private datacenter |
-
----
-
-👑 MCP Quantum Apex — Global Sovereign Deployment Blueprints Activated
+👑 MCP Quantum Apex — Global Sovereign Deployment Now Docker Enabled
