@@ -1,20 +1,34 @@
-# sector_rotation/rotation_engine.py
+# MCP Phase 29 — Sector Rotation v2.0
 
-"""
-MCP Open Core - Sector Rotation Engine
-Simple placeholder for future rotational scoring.
-"""
+import random
 
 class SectorRotationEngine:
     def __init__(self):
-        self.sectors = ["Layer1", "Layer2", "DeFi", "AI", "NFT"]
+        self.baseline_scores = {
+            "Layer1": 1.0,
+            "DeFi": 1.0,
+            "AI": 1.0,
+            "Meme": 1.0
+        }
+
+    def simulate_sector_data(self):
+        """
+        Simulate sector momentum shifts
+        """
+        data = {}
+        for sector in self.baseline_scores:
+            # Randomly simulate sector momentum
+            delta = random.uniform(-0.2, 0.4)
+            data[sector] = self.baseline_scores[sector] + delta
+        return data
 
     def calculate_sector_scores(self):
-        # Mock scoring
-        scores = {sector: 50 for sector in self.sectors}
-        print(f"Sector scores: {scores}")
-        return scores
+        scores = self.simulate_sector_data()
+        normalized_scores = {}
 
-if __name__ == "__main__":
-    sr = SectorRotationEngine()
-    sr.calculate_sector_scores()
+        for sector, raw_score in scores.items():
+            normalized = round(raw_score, 3)
+            normalized_scores[sector] = normalized
+
+        print(f"📊 Sector Scores: {normalized_scores}")
+        return normalized_scores
