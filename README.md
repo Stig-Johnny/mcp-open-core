@@ -1,73 +1,132 @@
-# MCP Open Core — Sovereign-Class Quant Intelligence Platform
-
-Welcome to MCP Open Core — the public, open-source foundation of the institutional-grade MCP Sovereign Fusion System.
-
-This repository contains a modular scaffold replicating the core logic architecture of MCP v1.0 and Quantum Apex v2.0, designed for educational, research, and private fund exploration purposes.
+# MCP SOVEREIGN — Quantum Apex Deployment
 
 ---
 
-## 🧠 Core Architecture Blueprint
-
-```
-/architecture/         | System blueprints & design principles
-/data_ingestion/       | Market, on-chain, macro & news ingestion
-/narrative_engine/     | Sentiment parsing module (news + social)
-/whale_monitor/        | Whale flow detection & monitoring
-/liquidity_model/      | Liquidity cycle tracking (LPI-360)
-/sector_rotation/      | Sector scoring engine (rotational logic)
-/risk_management/      | Profit Ladder + Kill Switch defensive AI
-/datastore/            | Historical Fusion Logs (sovereign-grade)
-/adaptive/             | Self-learning AI Calibration Engine
-/fusion/               | Central Fusion Orchestration Engine
-/scheduler/            | Autonomous Meta-Scheduler (daily ops)
-/dashboard/            | Sovereign Operator Control Tower Interface
-```
+🚀 **SOVEREIGN AI QUANT INTELLIGENCE PLATFORM**  
+**Genesis Build: Phases 1-82 Completed**
 
 ---
 
-## 🚀 Deployment Instructions
+## 🔧 MCP Architecture Summary
 
-### ✅ 1️⃣ Install All Required Dependencies:
+The MCP Sovereign System includes:
+
+- ✅ Quantum Fusion Node  
+- ✅ Adaptive Calibration Engine  
+- ✅ Recursive Reinforcement Model  
+- ✅ Multi-Dimensional Fusion Signals  
+- ✅ Kill Switch & Profit Ladder Defense  
+- ✅ Execution Router  
+- ✅ Simulation Harness  
+- ✅ Sovereign Deployment API  
+- ✅ Operator Control Panel (UI)  
+- ✅ Quantum Full Cycle Control Loops
+
+---
+
+## ⚙ System Initialization
+
+### 1️⃣ Clone repository  
+```bash
+git clone https://github.com/Stig-Johnny/mcp-open-core.git
+cd mcp-open-core
+```
+
+### 2️⃣ Install dependencies  
+```bash
+pip install flask requests
+```
+
+*(Note: tkinter is usually pre-installed with Python)*
+
+---
+
+## 🚀 Sovereign Simulation Mode
+
+Run full sovereign simulation loop:
 
 ```bash
-pip install requests flask feedparser schedule tweepy
+python simulator/full_cycle_simulator.py
 ```
 
-(Optional: Use a virtual environment for clean installation)
+This triggers the recursive reinforcement loop to self-calibrate fusion logic.
 
 ---
 
-### ✅ 2️⃣ Run Sovereign Manual Fusion Cycle
+## 🚀 MCP Genesis Deployment Mode
+
+Run full MCP Sovereign Quant Engine:
 
 ```bash
-python fusion/fusion_controller.py
+python mcp_genesis.py
 ```
+
+This triggers live fusion scoring, reinforcement learning, posture decisions, and sovereign logging.
 
 ---
 
-### ✅ 3️⃣ Run Adaptive Learning Engine
+## 🚀 Sovereign API Interface (Live Gateway)
+
+Start sovereign API server:
 
 ```bash
-python adaptive/learning_engine.py
+python api/quantum_api.py
 ```
 
----
-
-## 🧮 Summary
-
-This Open Core release allows researchers, developers and private funds to experiment with the architecture behind the MCP Sovereign Quant Intelligence Platform.
-
-> Note: This public release intentionally excludes private MCP v2.0 Quantum Apex proprietary AI models, live sentiment streams, whale prediction weights, and sovereign-grade Fusion Stack calibration datasets.
+- Fusion scoring endpoint: `POST /fusion_score`
+- Calibration endpoint: `POST /adjust_calibration`
+- Reinforcement endpoint: `GET /compute_reinforcement`
+- Healthcheck: `GET /healthcheck`
 
 ---
 
-## 📜 License
+## 🚀 Sovereign Operator Panel (UI Control Room)
 
-This open-source MCP Open Core release is provided under:
-**Sovereign Open Research License v1.0 (SORL)** — see LICENSE file.
+Start operator panel for live monitoring:
 
-For commercial licensing or institutional-grade full stack access, contact the MCP Sovereign Core maintainers.
+```bash
+python ui/operator_panel.py
+```
+
+- Refresh live fusion scoring
+- Adjust calibration sensitivity directly
+- Observe reinforcement learning adaptation
 
 ---
 
-> 🧭 Mission: Democratize sovereign-grade crypto quant research and foster next-generation alpha generation technologies.
+## 🧪 Sovereign Modules Included (Phases 1-82)
+
+- fusion_node.py  
+- data_aggregator.py  
+- decision_engine.py  
+- calibration_engine.py  
+- reinforcement_model.py  
+- quantum_core.py  
+- sovereign_loop.py  
+- execution_router.py  
+- kill_switch.py  
+- status_console.py  
+- live_interface.py  
+- mcp_genesis.py  
+- full_cycle_simulator.py  
+- quantum_api.py  
+- operator_panel.py
+
+---
+
+## 🔒 Sovereign Integrity Level
+
+**MCP Quantum Apex is now operating at Sovereign Quantum Control Layer v1.0**  
+All installed modules reflect institutional-grade fund architecture.
+
+---
+
+## 🚨 Next Phases
+
+Upon full verification, proceed to:
+
+**Phase 83 → Full Sovereign Genesis System Audit**
+
+---
+
+👑 Alpha Printing Authority: Online.
