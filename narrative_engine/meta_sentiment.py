@@ -1,18 +1,22 @@
-# MCP Phase 46 — Meta-Sentiment Polarity Engine v1.0
+# MCP Phase 66 — Meta-Sentiment Engine v1.0
 
 import random
 
 class MetaSentimentEngine:
     def __init__(self):
-        self.window = 100  # historical sentiment samples
+        self.base_sentiment = [random.uniform(-1, 1) for _ in range(100)]
 
     def compute_meta_sentiment(self):
-        # Simulate sentiment stream (placeholder for real NLP model output)
-        sentiment_samples = [random.uniform(-1, 1) for _ in range(self.window)]
+        # Simulate new market sentiment readings
+        new_data = [round(random.uniform(-1, 1), 3) for _ in range(10)]
+        self.base_sentiment.extend(new_data)
+        self.base_sentiment = self.base_sentiment[-100:]
 
-        sentiment_avg = round(sum(sentiment_samples) / len(sentiment_samples), 3)
-        sentiment_spread = round(max(sentiment_samples) - min(sentiment_samples), 3)
+        bullish = [s for s in self.base_sentiment if s > 0]
+        bearish = [s for s in self.base_sentiment if s < 0]
 
-        print(f"🧠 Meta-Sentiment → Avg: {sentiment_avg}, Spread: {sentiment_spread}")
+        avg_sentiment = round(sum(self.base_sentiment) / len(self.base_sentiment), 3)
+        spread = round(abs(len(bullish) - len(bearish)) / len(self.base_sentiment), 3)
 
-        return sentiment_avg, sentiment_spread
+        print(f"🧮 Meta-Sentiment → Avg: {avg_sentiment}, Spread: {spread}")
+        return avg_sentiment, spread
