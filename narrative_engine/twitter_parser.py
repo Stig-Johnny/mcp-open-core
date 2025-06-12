@@ -1,17 +1,33 @@
-# narrative_engine/twitter_parser.py
+# MCP Phase 67 — Narrative Parser Engine v1.0
 
-import tweepy
+import random
 
-class TwitterSentiment:
-    def __init__(self, bearer_token):
-        self.client = tweepy.Client(bearer_token)
+class NarrativeParser:
+    def __init__(self):
+        # Placeholder sentiment keyword dictionary (expandable)
+        self.sentiment_map = {
+            "bullish": 1,
+            "breakout": 1,
+            "uptrend": 1,
+            "record high": 1,
+            "explosion": 1,
+            "bearish": -1,
+            "collapse": -1,
+            "crash": -1,
+            "scam": -1,
+            "lawsuit": -1
+        }
 
-    def search_tweets(self, query, max_results=10):
-        tweets = self.client.search_recent_tweets(query=query, max_results=max_results)
-        return [tweet.text for tweet in tweets.data]
+    def parse_news(self, headline):
+        score = 0
+        lower_headline = headline.lower()
 
-if __name__ == "__main__":
-    BEARER_TOKEN = "INSERT_YOUR_TWITTER_BEARER_TOKEN"
-    ts = TwitterSentiment(BEARER_TOKEN)
-    tweets = ts.search_tweets("bitcoin")
-    print(tweets)
+        for keyword, weight in self.sentiment_map.items():
+            if keyword in lower_headline:
+                score += weight
+
+        # Add minor random market noise to simulate non-binary news impact
+        score += round(random.uniform(-0.3, 0.3), 2)
+
+        print(f"📰 Parsed Headline: \"{headline}\" → Sentiment Score: {score}")
+        return score
