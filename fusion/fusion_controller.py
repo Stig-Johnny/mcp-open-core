@@ -1,3 +1,5 @@
+# MCP Fusion Controller — Phase 32: Sentinel Radar Fully Integrated
+
 import os
 import json
 from data_ingestion.market_data import MarketDataIngestor
@@ -15,6 +17,7 @@ from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from risk_management.alpha_defense import AlphaDefenseShield
 from risk_management.sigma_wave import SigmaWaveVolatilityEngine
+from risk_management.sentinel_volatility import SentinelVolatilityRadar
 from adaptive.self_learning import SelfLearningEngine
 from adaptive.orbital_controller import OrbitalController
 from datastore.state_logger import StateLogger
@@ -36,6 +39,7 @@ class FusionController:
         self.sigma_wave = SigmaWaveVolatilityEngine()
         self.rotation_engine = SectorRotationEngine()
         self.quantum_node = QuantumNodeFusion()
+        self.sentinel = SentinelVolatilityRadar()
 
         self.profit_ladder = ProfitLadder()
         self.kill_switch = KillSwitch()
@@ -73,6 +77,7 @@ class FusionController:
         volatility_shock = self.sigma_wave.compute_volatility_shock()
         corridor_pressure, corridor_breakdown = self.liquidity_corridor.compute_corridor_pressure()
         sentiment_delta = self.sentiment_engine.compute_sentiment_delta()
+        sentinel_spike = self.sentinel.compute_spike_risk()
 
         return {
             "market": market,
@@ -82,7 +87,8 @@ class FusionController:
             "volatility_shock": volatility_shock,
             "corridor_pressure": corridor_pressure,
             "corridor_breakdown": corridor_breakdown,
-            "sentiment_delta": sentiment_delta
+            "sentiment_delta": sentiment_delta,
+            "sentinel_spike": sentinel_spike
         }
 
     def process_signals(self, data):
@@ -100,6 +106,7 @@ class FusionController:
             "volatility": data["volatility_shock"],
             "corridor": data["corridor_pressure"],
             "sentiment_delta": data["sentiment_delta"],
+            "sentinel_spike": data["sentinel_spike"],
             "sectors": sector_scores
         }
 
@@ -114,6 +121,9 @@ class FusionController:
             decisions["FUSION_BIAS"] = "DEFENSIVE MODE"
         else:
             decisions["FUSION_BIAS"] = "NEUTRAL MONITORING"
+
+        if signals["sentinel_spike"] == "HIGH SPIKE RISK":
+            decisions["SENTINEL_ALERT"] = "IMMINENT MOVE DETECTED"
 
         profit_targets = self.profit_ladder.evaluate_profit_targets(
             portfolio_value=1000,
