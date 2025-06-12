@@ -1,6 +1,9 @@
+# ARCHIVED: This file has been moved to /archive/ and is not part of the active MCP core system.
+
 # whale_monitor/whale_detector.py
 
 import requests
+import os
 
 class WhaleDetector:
     def __init__(self, api_key):
@@ -19,7 +22,11 @@ class WhaleDetector:
         return data
 
 if __name__ == "__main__":
-    # Put your Whale Alert API key here
-    WD_API_KEY = "INSERT_YOUR_API_KEY"
-    wd = WhaleDetector(WD_API_KEY)
+    # Use environment variable for Whale API Key
+    WHALE_API_KEY = os.getenv("WHALE_API_KEY")
+    if not WHALE_API_KEY:
+        print("[WhaleDetector] ERROR: Please set WHALE_API_KEY as an environment variable.")
+        exit(1)
+
+    wd = WhaleDetector(WHALE_API_KEY)
     print(wd.fetch_whale_data())

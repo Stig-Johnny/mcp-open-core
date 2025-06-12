@@ -1,3 +1,5 @@
+# ARCHIVED: This file has been moved to /archive/ and is not part of the active MCP core system.
+
 # MCP v2.0 - Sovereign Fusion Market Monitor Controller
 
 from whale_monitor.orca_engine import OrcaEngine

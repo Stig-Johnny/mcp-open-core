@@ -1,3 +1,4 @@
+# ARCHIVED: This file has been moved to /archive/news_parser.py and is not used by the main system.
 # data_ingestion/news_parser.py
 
 import feedparser

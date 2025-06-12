@@ -14,7 +14,7 @@ class MCPGenesis:
     def __init__(self):
         self.reinforcement_model = ReinforcementModel()
         self.calibration_engine = CalibrationEngine()
-        self.fusion_node = FusionNode(self.calibration_engine, self.reinforcement_model)
+        self.fusion_node = FusionNode(self.calibration_engine)
         self.decision_engine = DecisionEngine()
         self.execution_router = ExecutionRouter(test_mode=True)
         self.status_console = StatusConsole(

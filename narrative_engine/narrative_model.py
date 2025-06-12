@@ -5,6 +5,8 @@ MCP Open Core - Narrative Parser Module
 Very basic NLP scaffold for narrative detection.
 """
 
+# ARCHIVED: This file has been moved to /archive/narrative_model.py and is not used by the main system.
+
 class NarrativeParser:
     def __init__(self):
         self.keywords = ["bullish", "bearish", "ETF", "inflation", "whale"]

@@ -16,7 +16,7 @@ from narrative_engine.orbital_shock import OrbitalShockEngine
 from narrative_engine.narrative_acceleration import NarrativeAcceleration
 from sector_rotation.rotation_engine import SectorRotationEngine
 from sector_rotation.sector_intelligence import SectorIntelligence
-from fusion.quantum_node import QuantumNodeFusion
+from fusion.quantum_node import FusionNode
 from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from risk_management.alpha_defense import AlphaDefenseShield
@@ -29,10 +29,15 @@ from adaptive.orbital_controller import OrbitalController
 from datastore.state_logger import StateLogger
 from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
+from core.calibration_engine import CalibrationEngine
+from adaptive.reinforcement_model import ReinforcementModel
 
 
 class FusionController:
     def __init__(self, binance_api_key=None, binance_api_secret=None):
+        self.calibration_engine = CalibrationEngine()
+        self.reinforcement_model = ReinforcementModel()
+
         self.market_data = MarketDataIngestor()
         self.liquidity_fetcher = LiquidityFetcher()
         self.news_parser = NewsParser()
@@ -51,7 +56,7 @@ class FusionController:
         self.liquidity_shock = LiquidityShockEngine()
         self.sigma_wave = SigmaWaveVolatilityEngine()
         self.rotation_engine = SectorRotationEngine()
-        self.quantum_node = QuantumNodeFusion()
+        self.quantum_node = FusionNode(self.calibration_engine, self.reinforcement_model)
         self.sentinel = SentinelVolatilityRadar()
         self.sentinel_shield = SentinelShield()
         self.macro_feed = GlobalMacroFeed()
@@ -86,6 +91,7 @@ class FusionController:
     def collect_data(self):
         print("Collecting Data...")
         market = self.market_data.fetch_price("BTCUSDT")
+        order_book = self.market_data.fetch_order_book("BTCUSDT", limit=5)
         stablecoins = self.liquidity_fetcher.fetch_stablecoin_data()
         news = self.news_parser.fetch_headlines()
         whale_pressure = self.orca_x.compute_whale_pressure()
@@ -103,6 +109,7 @@ class FusionController:
 
         return {
             "market": market,
+            "order_book": order_book,
             "stablecoins": stablecoins,
             "news": news,
             "whale_pressure": whale_pressure,
@@ -126,9 +133,20 @@ class FusionController:
         sentiment_scores = [self.narrative_parser.parse_news(article['title']) for article in data["news"]]
         avg_sentiment = sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0
 
-        liquidity_delta = self.liquidity_model.check_liquidity_inflow(data["stablecoins"], 1000000000)
+        # Extract numeric stablecoin value for liquidity calculations
+        stablecoins_value = 0
+        if isinstance(data["stablecoins"], (int, float)):
+            stablecoins_value = data["stablecoins"]
+        elif isinstance(data["stablecoins"], dict):
+            # Try common keys
+            for k in ["usd", "total", "market_cap", "total_stablecoin_market_cap"]:
+                if k in data["stablecoins"]:
+                    stablecoins_value = data["stablecoins"][k]
+                    break
+        liquidity_delta = self.liquidity_model.check_liquidity_inflow(stablecoins_value, 1000000000)
 
-        return {
+        # Ensure all required keys for compute_fusion_score are present
+        safe_signals = {
             "sentiment": avg_sentiment,
             "liquidity": liquidity_delta,
             "whales": data["whale_pressure"],
@@ -139,12 +157,14 @@ class FusionController:
             "sentinel_spike": data["sentinel_spike"],
             "liquidity_shock": data["liquidity_shock"],
             "macro_bias": data["macro_bias"],
-            "meta_sentiment_avg": data["meta_sentiment_avg"],
-            "meta_sentiment_spread": data["meta_sentiment_spread"],
+            "meta_sentiment": data.get("meta_sentiment_avg", 0),
+            "meta_sentiment_spread": data.get("meta_sentiment_spread", 0),
             "orbital_shock": data["orbital_shock"],
             "sector_bias": data["sector_bias"],
             "narrative_acceleration": data["narrative_acceleration"]
         }
+        return safe_signals
+
     def decide_actions(self, signals):
         fusion_score = self.quantum_node.compute_fusion_score(signals)
         decisions = {}
@@ -226,7 +246,10 @@ class FusionController:
         print(f"🧠 Adaptive Learning Bias Adjustment: {bias}")
 
 if __name__ == "__main__":
-    BINANCE_API_KEY = "INSERT_YOUR_BINANCE_API_KEY"
-    BINANCE_API_SECRET = "INSERT_YOUR_BINANCE_API_SECRET"
+    BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
+    BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET")
+    if not BINANCE_API_KEY or not BINANCE_API_SECRET:
+        print("[FusionController] ERROR: Please set BINANCE_API_KEY and BINANCE_API_SECRET as environment variables.")
+        exit(1)
     fusion = FusionController(binance_api_key=BINANCE_API_KEY, binance_api_secret=BINANCE_API_SECRET)
     fusion.run_cycle()

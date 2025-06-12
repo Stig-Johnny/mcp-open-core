@@ -1,3 +1,5 @@
+# ARCHIVED: This file has been moved to /archive/ and is not part of the active MCP core system.
+
 # dashboard/control_center.py
 
 from flask import Flask, render_template, jsonify

@@ -1,5 +1,7 @@
 # MCP Phase 58 — Self-Learning Engine v1.0
 
+# ARCHIVED: This file has been moved to /archive/self_learning.py and is not used by the main system.
+
 import json
 import os
 import random

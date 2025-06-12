@@ -1,3 +1,5 @@
+# ARCHIVED: This file has been moved to /archive/ and is not part of the active MCP core system.
+
 # MCP Phase 77 — Sovereign Full Cycle Simulation Harness v1.0
 
 import random

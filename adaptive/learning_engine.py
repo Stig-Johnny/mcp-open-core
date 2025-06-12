@@ -1,3 +1,5 @@
+# ARCHIVED: This file has been moved to /archive/learning_engine.py and is not used by the main system.
+
 # adaptive/learning_engine.py
 
 import os

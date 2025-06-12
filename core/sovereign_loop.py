@@ -1,3 +1,5 @@
+# ARCHIVED: This file has been moved to /archive/ and is not part of the active MCP core system.
+
 # MCP Phase 74 — Sovereign Operational Loop v1.0
 
 import time

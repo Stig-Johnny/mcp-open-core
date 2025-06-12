@@ -1,4 +1,4 @@
-# liquidity_model/liquidity_core.py
+# ARCHIVED: This file has been moved to /archive/ and is not part of the active MCP core system.
 
 """
 MCP Open Core - Liquidity Model

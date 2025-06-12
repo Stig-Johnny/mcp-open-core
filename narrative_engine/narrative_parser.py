@@ -1,7 +1,5 @@
 # MCP Phase 67 — Narrative Parser Engine v1.0
 
-# ARCHIVED: This file has been moved to /archive/twitter_parser.py and is not used by the main system.
-
 import random
 
 class NarrativeParser:

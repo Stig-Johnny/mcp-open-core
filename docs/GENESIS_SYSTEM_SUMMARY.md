@@ -90,4 +90,23 @@ MCP Quantum Apex is now recognized as:
 
 ---
 
+## 🚀 LIVE DATA INTEGRATION (2025)
+
+- The MCP system now ingests real-time price and order book data directly from Binance via the `/live` API endpoint.
+- Every call to `/live` fetches the latest market data, runs it through the fusion engine, and returns actionable analytics and posture decisions.
+- API keys for Binance and Whale Alert are now securely managed via environment variables (`BINANCE_API_KEY`, `BINANCE_API_SECRET`, `WHALE_API_KEY`).
+- All hardcoded demo keys have been removed for security and compliance.
+
+### Example Usage
+
+```
+curl http://localhost:5051/live
+```
+Returns:
+- Live market price and order book (Binance)
+- Fusion signals and posture
+- Profit ladder and risk analytics
+
+---
+
 👑 Alpha Sovereign Quantum Intelligence Confirmed.

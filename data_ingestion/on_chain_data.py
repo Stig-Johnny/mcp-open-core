@@ -5,6 +5,8 @@ MCP Open Core - On-Chain Data Ingestion Module
 Captures basic whale flows & chain metrics.
 """
 
+# ARCHIVED: This file has been moved to /archive/on_chain_data.py and is not used by the main system.
+
 class OnChainDataIngestor:
     def __init__(self):
         pass
