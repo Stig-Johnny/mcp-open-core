@@ -1,4 +1,4 @@
-# MCP Sovereign Fusion Controller — Phase 21 Orbital Mode Active
+# MCP Fusion Controller — Phase 22: Liquidity Mapping Fully Integrated
 
 import os
 import json
@@ -7,6 +7,7 @@ from data_ingestion.macro_data import LiquidityFetcher
 from data_ingestion.news_parser import NewsParser
 from whale_monitor.whale_detector import WhaleDetector
 from liquidity_model.liquidity_core import LiquidityModel
+from liquidity_model.liquidity_pressure import LiquidityPressureCore
 from narrative_engine.narrative_model import NarrativeParser
 from sector_rotation.rotation_engine import SectorRotationEngine
 from risk_management.profit_ladder import ProfitLadder
@@ -27,6 +28,7 @@ class FusionController:
         self.narrative_parser = NarrativeParser()
 
         self.liquidity_model = LiquidityModel()
+        self.liquidity_pressure_core = LiquidityPressureCore()
         self.rotation_engine = SectorRotationEngine()
 
         self.profit_ladder = ProfitLadder()
@@ -129,7 +131,10 @@ class FusionController:
         print(f"Profit Ladder: {actions['profit_targets']}")
         print("-------------------------\n")
 
-        whale_netflow = -2000  # Simulated
+        liquidity_pressure_score = self.liquidity_pressure_core.compute_liquidity_pressure()
+        print(f"🔎 LPI-X Liquidity Score: {liquidity_pressure_score}")
+
+        whale_netflow = -2000
         liquidity_netflow = data["stablecoins"]["netflow"] if isinstance(data["stablecoins"], dict) else 0
 
         kill_switch_triggered, kill_flags = self.alpha_defense.check_kill_switch(signals, liquidity_netflow, whale_netflow)
@@ -142,7 +147,7 @@ class FusionController:
         self.execution_router.translate_and_execute(signals)
         self.logger.log_cycle(data, signals, actions["decisions"])
 
-        simulated_pnl = 100  # Placeholder
+        simulated_pnl = 100
         self.self_learning.log_cycle(signals, actions["decisions"], simulated_pnl)
         bias = self.self_learning.compute_bias_adjustments()
         print(f"🧠 Adaptive Learning Bias Adjustment: {bias}")
