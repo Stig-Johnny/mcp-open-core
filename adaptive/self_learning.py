@@ -1,55 +1,69 @@
-# MCP Phase 20 — Sovereign AI Self-Learning Module
+# MCP Phase 35 — Self-Learning Weight Engine v1.0
 
-import os
 import json
-import datetime
+import os
+import random
 
 class SelfLearningEngine:
-    def __init__(self, learning_log="adaptive/learning_log.json"):
-        self.learning_log = learning_log
-        if not os.path.exists("adaptive/"):
-            os.makedirs("adaptive/")
-        if not os.path.exists(self.learning_log):
-            with open(self.learning_log, "w") as f:
+    def __init__(self):
+        self.history_file = "adaptive/learning_log.json"
+        self.weights_file = "adaptive/weights.json"
+        self.initialize_logs()
+
+    def initialize_logs(self):
+        if not os.path.exists(self.history_file):
+            with open(self.history_file, "w") as f:
                 json.dump([], f)
 
+        if not os.path.exists(self.weights_file):
+            weights = {
+                "sentiment": 1.0,
+                "liquidity": 1.0,
+                "whales": 1.0,
+                "sectors": 1.0
+            }
+            with open(self.weights_file, "w") as f:
+                json.dump(weights, f)
+
     def log_cycle(self, signals, decisions, pnl):
-        log_entry = {
-            "timestamp": datetime.datetime.utcnow().isoformat(),
+        with open(self.history_file) as f:
+            history = json.load(f)
+
+        history.append({
             "signals": signals,
             "decisions": decisions,
             "pnl": pnl
-        }
-        with open(self.learning_log, "r+") as f:
-            data = json.load(f)
-            data.append(log_entry)
-            f.seek(0)
-            json.dump(data, f, indent=2)
+        })
+
+        with open(self.history_file, "w") as f:
+            json.dump(history, f)
 
     def compute_bias_adjustments(self):
-        with open(self.learning_log, "r") as f:
-            data = json.load(f)
+        try:
+            with open(self.history_file) as f:
+                history = json.load(f)
 
-        if not data:
-            return {}
+            # Only act if we have enough history
+            if len(history) < 10:
+                return "Not enough data yet"
 
-        sentiment_gains = []
-        liquidity_gains = []
-        whales_gains = []
-        sectors_gains = []
+            # Compute average pnl and basic adjustments
+            total_pnl = sum(entry["pnl"] for entry in history)
+            avg_pnl = total_pnl / len(history)
 
-        for entry in data:
-            pnl = entry["pnl"]
-            sentiment_gains.append(pnl * entry["signals"].get("sentiment", 0))
-            liquidity_gains.append(pnl * entry["signals"].get("liquidity", 0))
-            whales_gains.append(pnl * entry["signals"].get("whales", 0))
-            sectors_gains.append(pnl * entry["signals"].get("sectors", {}).get("DeFi", 0))
+            # Very naive learning rule for now
+            adjustment = 0.1 if avg_pnl > 0 else -0.1
 
-        adjustments = {
-            "sentiment_bias": sum(sentiment_gains) / len(sentiment_gains),
-            "liquidity_bias": sum(liquidity_gains) / len(liquidity_gains),
-            "whale_bias": sum(whales_gains) / len(whales_gains),
-            "sectors_bias": sum(sectors_gains) / len(sectors_gains)
-        }
+            with open(self.weights_file) as f:
+                weights = json.load(f)
 
-        return adjustments
+            # Adjust sentiment and liquidity weights slightly
+            weights["sentiment"] = max(0.1, weights["sentiment"] + adjustment)
+            weights["liquidity"] = max(0.1, weights["liquidity"] + adjustment)
+
+            with open(self.weights_file, "w") as f:
+                json.dump(weights, f)
+
+            return weights
+        except Exception as e:
+            return f"Learning Error: {e}"
