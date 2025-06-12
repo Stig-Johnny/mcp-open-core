@@ -3,6 +3,7 @@ import json
 from data_ingestion.market_data import MarketDataIngestor
 from data_ingestion.macro_data import LiquidityFetcher
 from data_ingestion.news_parser import NewsParser
+from data_ingestion.on_chain_data import OnChainDataIngestor
 from whale_monitor.orca_x_engine import OrcaXWhaleForecast
 from whale_monitor.orca_watch import OrcaWatchCluster
 from liquidity_model.liquidity_core import LiquidityModel
@@ -31,7 +32,6 @@ from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
 from core.calibration_engine import CalibrationEngine
 from adaptive.reinforcement_model import ReinforcementModel
-from alerting.email_alert import send_posture_alert
 
 
 class FusionController:
@@ -73,6 +73,8 @@ class FusionController:
         self.execution_router = ExecutionRouter(binance_api_key, binance_api_secret, test_mode=True)
         self.adaptive_weights = self.load_adaptive_weights()
 
+        self.on_chain = OnChainDataIngestor()
+
     def load_adaptive_weights(self):
         file_path = "adaptive/weights.json"
         if os.path.exists(file_path):
@@ -107,6 +109,7 @@ class FusionController:
         orbital_shock = self.orbital_shock.compute_shock_signal()
         sector_bias = self.sector_intel.compute_sector_bias()
         narrative_acceleration = self.narrative_accel.compute_acceleration()
+        on_chain_whale = self.on_chain.fetch_whale_transactions()
 
         return {
             "market": market,
@@ -126,7 +129,8 @@ class FusionController:
             "meta_sentiment_spread": meta_sentiment_spread,
             "orbital_shock": orbital_shock,
             "sector_bias": sector_bias,
-            "narrative_acceleration": narrative_acceleration
+            "narrative_acceleration": narrative_acceleration,
+            "on_chain_whale": on_chain_whale
         }
 
     def process_signals(self, data):

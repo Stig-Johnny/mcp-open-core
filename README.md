@@ -118,6 +118,16 @@ You can also access the dashboard from the main index page.
 
 ---
 
+## 🆕 Live On-Chain Whale Data & News Headlines
+
+The MCP dashboard and API now include:
+- **On-Chain Whale Data:** Live whale transaction data from public blockchain APIs.
+- **News Headlines:** Latest crypto news headlines from major RSS feeds.
+
+These are visible in the dashboard at `/mcp/dashboard` and available via the `/live` API endpoint for operator and AI use.
+
+---
+
 ## 🧪 Sovereign Modules Included (Phases 1-82)
 
 - fusion_node.py  

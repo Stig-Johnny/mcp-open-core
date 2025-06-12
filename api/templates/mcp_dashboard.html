@@ -43,6 +43,22 @@
             </div>
         </div>
     </div>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card p-3 mb-3">
+                <h4>On-Chain Whale Data</h4>
+                <pre id="onchain" style="min-height:100px; background:#23272f; color:#f8f9fa;"></pre>
+                <button class="btn btn-primary" onclick="loadLive()">Refresh On-Chain</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3 mb-3">
+                <h4>News Headlines</h4>
+                <pre id="news" style="min-height:100px; background:#23272f; color:#f8f9fa;"></pre>
+                <button class="btn btn-primary" onclick="loadLive()">Refresh News</button>
+            </div>
+        </div>
+    </div>
     <div class="card p-3 mb-3">
         <h4>Invoke Action</h4>
         <form id="actionForm" onsubmit="invokeAction(event)">
@@ -73,6 +89,12 @@ function loadTools() {
         document.getElementById('tools').textContent = JSON.stringify(data, null, 2);
     });
 }
+function loadLive() {
+    fetch('/live').then(r => r.json()).then(data => {
+        document.getElementById('onchain').textContent = JSON.stringify(data.on_chain_whale, null, 2);
+        document.getElementById('news').textContent = JSON.stringify(data.news, null, 2);
+    });
+}
 function invokeAction(e) {
     e.preventDefault();
     const tool = document.getElementById('tool').value;
@@ -96,6 +118,7 @@ function invokeAction(e) {
 window.onload = function() {
     loadContext();
     loadTools();
+    loadLive();
 };
 </script>
 </body>

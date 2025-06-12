@@ -102,7 +102,9 @@ def live_analytics():
         "market": data["market"],
         "order_book": data["order_book"],
         "fusion_signals": signals,
-        "decisions": decisions
+        "decisions": decisions,
+        "on_chain_whale": data.get("on_chain_whale", []),
+        "news": data.get("news", [])
     })
 
 @app.route("/assets/spot", methods=["GET"])
