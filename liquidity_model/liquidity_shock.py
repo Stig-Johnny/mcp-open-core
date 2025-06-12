@@ -1,31 +1,20 @@
-# MCP Phase 33 — Liquidity Shock Engine v1.0
+# MCP Phase 54 — Liquidity Shock Engine v1.0
 
 import random
 
 class LiquidityShockEngine:
     def __init__(self):
-        self.previous_stablecoin_supply = 100_000_000_000  # simulate total supply baseline
-
-    def simulate_liquidity_data(self):
-        """
-        Simulate stablecoin supply fluctuation (proxy for crypto liquidity conditions)
-        """
-        fluctuation = random.uniform(-5_000_000_000, 5_000_000_000)
-        current_supply = self.previous_stablecoin_supply + fluctuation
-        self.previous_stablecoin_supply = current_supply
-        return round(current_supply, 2)
+        self.shock_threshold = -1.0
 
     def detect_shock(self):
-        current_supply = self.simulate_liquidity_data()
-        supply_change = (current_supply - self.previous_stablecoin_supply) / self.previous_stablecoin_supply
+        # Simulated liquidity delta (placeholder for real-time stablecoin exchange netflow)
+        liquidity_delta = round(random.uniform(-2, 2), 3)
 
-        # Liquidity shock definitions:
-        if supply_change < -0.03:
-            shock_status = "LIQUIDITY DRAIN WARNING"
-        elif supply_change > 0.03:
-            shock_status = "LIQUIDITY EXPANSION"
+        if liquidity_delta < self.shock_threshold:
+            shock_signal = "LIQUIDITY DRAIN WARNING"
         else:
-            shock_status = "NEUTRAL FLOW"
+            shock_signal = "NORMAL"
 
-        print(f"💧 Liquidity Shock Engine → Supply: ${current_supply:,.0f} | Change: {supply_change:.3%} | Status: {shock_status}")
-        return shock_status
+        print(f"⚠ Liquidity Shock Monitor: {shock_signal} ({liquidity_delta})")
+
+        return shock_signal
