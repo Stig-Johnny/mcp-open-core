@@ -1,25 +1,39 @@
-# MCP Phase 23 — ORCA-X v2.0 Whale Anticipation Predictive Engine
+# MCP Phase 31 — ORCA-X v2.0 Predictive Whale Cluster Forecast Engine
 
 import random
 
 class OrcaXWhaleForecast:
     def __init__(self):
-        self.baseline_inflow = 0
-        self.baseline_outflow = 0
+        self.historical_accumulation_window = 7  # rolling 7-day analysis window
+        self.recent_accumulation = [random.uniform(-500, 1500) for _ in range(self.historical_accumulation_window)]
 
-    def simulate_whale_data_feed(self):
-        inflow = random.randint(0, 5_000)
-        outflow = random.randint(0, 5_000)
-        return inflow, outflow
+    def simulate_whale_netflow(self):
+        """
+        Simulate daily whale flow for forecast modeling.
+        Positive = net accumulation, Negative = net distribution.
+        """
+        netflow_today = random.uniform(-1000, 2000)
+        return round(netflow_today, 2)
 
     def compute_whale_pressure(self):
-        inflow, outflow = self.simulate_whale_data_feed()
+        """
+        Primary live whale pressure score used by MCP Fusion.
+        """
+        netflow_today = self.simulate_whale_netflow()
 
-        net_flow = inflow - outflow
-        total_flow = inflow + outflow + 1  # Avoid zero division
+        # Maintain rolling accumulation window
+        self.recent_accumulation.pop(0)
+        self.recent_accumulation.append(netflow_today)
 
-        pressure_score = net_flow / total_flow
+        avg_accumulation = sum(self.recent_accumulation) / self.historical_accumulation_window
 
-        print(f"🐋 ORCA-X Whale Pressure → Inflow: {inflow} BTC | Outflow: {outflow} BTC | Score: {round(pressure_score,3)}")
+        # Forecast future pressure zones
+        projected_pressure = avg_accumulation + (netflow_today * 0.25)
 
-        return round(pressure_score, 3)
+        print(f"🐋 ORCA-X Forecast → Live Netflow: {netflow_today} | Rolling Avg: {round(avg_accumulation,2)} | Projected Whale Pressure: {round(projected_pressure,2)}")
+
+        # Normalize forecast into MCP signal band
+        whale_pressure_score = projected_pressure / 1000
+        whale_pressure_score = round(whale_pressure_score, 3)
+
+        return whale_pressure_score
