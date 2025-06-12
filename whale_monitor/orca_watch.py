@@ -1,39 +1,22 @@
-# MCP Phase 38 — ORCA-WATCH Whale Cluster Engine v2.0
+# MCP Phase 59 — ORCA-WATCH Cluster v1.0
 
 import random
 
 class OrcaWatchCluster:
     def __init__(self):
-        self.cluster_window = []
-
-    def simulate_whale_movement(self):
-        return round(random.uniform(-3000, 3000), 2)
-
-    def update_cluster_window(self):
-        new_value = self.simulate_whale_movement()
-        self.cluster_window.append(new_value)
-        if len(self.cluster_window) > 50:
-            self.cluster_window.pop(0)
+        self.threshold_accumulate = 0.7
+        self.threshold_distribute = -0.7
 
     def compute_whale_cluster_signal(self):
-        self.update_cluster_window()
+        # Simulated whale behavior score (placeholder for live whale tracking data)
+        cluster_score = round(random.uniform(-1, 1), 3)
 
-        if not self.cluster_window:
-            return "NEUTRAL"
-
-        total_flow = sum(self.cluster_window)
-        avg_flow = total_flow / len(self.cluster_window)
-
-        if avg_flow > 1500:
-            signal = "AGGRESSIVE ACCUMULATION"
-        elif avg_flow > 500:
-            signal = "SOFT ACCUMULATION"
-        elif avg_flow < -1500:
-            signal = "AGGRESSIVE DISTRIBUTION"
-        elif avg_flow < -500:
-            signal = "SOFT DISTRIBUTION"
+        if cluster_score > self.threshold_accumulate:
+            cluster_signal = "AGGRESSIVE ACCUMULATION"
+        elif cluster_score < self.threshold_distribute:
+            cluster_signal = "AGGRESSIVE DISTRIBUTION"
         else:
-            signal = "NEUTRAL FLOW"
+            cluster_signal = "NEUTRAL CLUSTER BALANCE"
 
-        print(f"🐋 Orca-Watch Cluster → Avg Flow: {avg_flow:.2f} BTC | Signal: {signal}")
-        return signal
+        print(f"🐳 ORCA-WATCH Cluster Signal: {cluster_signal} ({cluster_score})")
+        return cluster_signal
