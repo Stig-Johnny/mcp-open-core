@@ -1,4 +1,4 @@
-# MCP Fusion Controller — Phase 23: ORCA-X Whale Predictive Model Integrated
+# MCP Fusion Controller — Phase 24: SIGMA-WAVE Integrated
 
 import os
 import json
@@ -13,6 +13,7 @@ from sector_rotation.rotation_engine import SectorRotationEngine
 from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from risk_management.alpha_defense import AlphaDefenseShield
+from risk_management.sigma_wave import SigmaWaveVolatilityEngine
 from adaptive.self_learning import SelfLearningEngine
 from adaptive.orbital_controller import OrbitalController
 from datastore.state_logger import StateLogger
@@ -29,6 +30,7 @@ class FusionController:
 
         self.liquidity_model = LiquidityModel()
         self.liquidity_pressure_core = LiquidityPressureCore()
+        self.sigma_wave = SigmaWaveVolatilityEngine()
         self.rotation_engine = SectorRotationEngine()
 
         self.profit_ladder = ProfitLadder()
@@ -64,12 +66,14 @@ class FusionController:
         stablecoins = self.liquidity_fetcher.fetch_stablecoin_data()
         news = self.news_parser.fetch_headlines()
         whale_pressure = self.orca_x.compute_whale_pressure()
+        volatility_shock = self.sigma_wave.compute_volatility_shock()
 
         return {
             "market": market,
             "stablecoins": stablecoins,
             "news": news,
-            "whale_pressure": whale_pressure
+            "whale_pressure": whale_pressure,
+            "volatility_shock": volatility_shock
         }
 
     def process_signals(self, data):
@@ -84,6 +88,7 @@ class FusionController:
             "sentiment": avg_sentiment,
             "liquidity": liquidity_delta,
             "whales": data["whale_pressure"],
+            "volatility": data["volatility_shock"],
             "sectors": sector_scores
         }
 
@@ -107,6 +112,9 @@ class FusionController:
 
         if signals["sectors"]["DeFi"] > sector_trigger:
             decisions["rotation"] = "DEPLOY TO DEFI"
+
+        if signals["volatility"] > 0.5:
+            decisions["volatility"] = "CAUTION: HIGH VOL"
 
         profit_targets = self.profit_ladder.evaluate_profit_targets(1000)
 
@@ -133,7 +141,7 @@ class FusionController:
         liquidity_pressure_score = self.liquidity_pressure_core.compute_liquidity_pressure()
         print(f"🔎 LPI-X Liquidity Score: {liquidity_pressure_score}")
 
-        whale_netflow = data["whale_pressure"] * 1000  # Simulated scaling
+        whale_netflow = data["whale_pressure"] * 1000
         liquidity_netflow = data["stablecoins"]["netflow"] if isinstance(data["stablecoins"], dict) else 0
 
         kill_switch_triggered, kill_flags = self.alpha_defense.check_kill_switch(signals, liquidity_netflow, whale_netflow)
