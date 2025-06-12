@@ -9,6 +9,7 @@ from adaptive.reinforcement_model import ReinforcementModel
 from core.calibration_engine import CalibrationEngine
 from fusion.fusion_node import FusionNode
 from fusion.decision_engine import DecisionEngine
+from exchange_connector.binance_connector import BinanceConnector
 
 # Initialize Sovereign Modules
 reinforcement_model = ReinforcementModel()
@@ -99,6 +100,105 @@ def live_analytics():
         "fusion_signals": signals,
         "decisions": decisions
     })
+
+@app.route("/assets/spot", methods=["GET"])
+def get_spot_assets():
+    api_key = os.getenv("BINANCE_API_KEY")
+    api_secret = os.getenv("BINANCE_API_SECRET")
+    if not api_key or not api_secret:
+        return jsonify({"error": "Binance API keys not set in environment."}), 400
+    connector = BinanceConnector(api_key, api_secret, test_mode=False)
+    account_info = connector.get_account_info()
+    balances = account_info.get("balances", [])
+    # Filter out zero balances for clarity
+    nonzero_balances = [b for b in balances if float(b.get("free", 0)) > 0 or float(b.get("locked", 0)) > 0]
+    return jsonify({"assets": nonzero_balances})
+
+@app.route("/mcp/context", methods=["GET"])
+def mcp_context():
+    # Get balances
+    api_key = os.getenv("BINANCE_API_KEY")
+    api_secret = os.getenv("BINANCE_API_SECRET")
+    balances = []
+    if api_key and api_secret:
+        from exchange_connector.binance_connector import BinanceConnector
+        connector = BinanceConnector(api_key, api_secret, test_mode=False)
+        account_info = connector.get_account_info()
+        balances = [b for b in account_info.get("balances", []) if float(b.get("free", 0)) > 0 or float(b.get("locked", 0)) > 0]
+    # Get posture and fusion score
+    signals = {
+        "sentiment": 0.5,
+        "liquidity": 0.7,
+        "whales": 100,
+        "macro_bias": 1,
+        "sector_bias": 0,
+        "narrative_acceleration": "BUILDING MOMENTUM",
+        "liquidity_shock": "NONE",
+        "whale_cluster": "NEUTRAL CLUSTER BALANCE",
+        "meta_sentiment": 0.2,
+        "meta_sentiment_spread": 0.1,
+        "sentinel_spike": "NORMAL"
+    }
+    fusion_score = fusion_node.compute_fusion_score(signals)
+    posture = decision_engine.determine_posture(fusion_score, kill_switch_flag=False)
+    # MCP context schema
+    context = {
+        "balances": balances,
+        "fusion_score": fusion_score,
+        "posture": posture,
+        "calibration_bias": calibration_engine.global_sensitivity_bias,
+        "reinforcement_bias": reinforcement_model.bias_adjustment
+    }
+    return jsonify({"context": context})
+
+@app.route("/mcp/tools", methods=["GET"])
+def mcp_tools():
+    # Describe available tools/actions for the MCP agent
+    tools = [
+        {
+            "name": "get_spot_assets",
+            "description": "Get current Binance spot balances.",
+            "parameters": {},
+            "returns": {"assets": "List of asset balances (symbol, free, locked)"}
+        },
+        {
+            "name": "place_order",
+            "description": "Place a spot market order on Binance.",
+            "parameters": {
+                "symbol": "Trading pair symbol, e.g., BTCUSDT",
+                "side": "BUY or SELL",
+                "quantity": "Order quantity (float)"
+            },
+            "returns": {"order_result": "Order execution result from Binance"}
+        }
+    ]
+    return jsonify({"tools": tools})
+
+@app.route("/mcp/action", methods=["POST"])
+def mcp_action():
+    data = request.get_json()
+    tool = data.get("tool")
+    params = data.get("parameters", {})
+    api_key = os.getenv("BINANCE_API_KEY")
+    api_secret = os.getenv("BINANCE_API_SECRET")
+    if not api_key or not api_secret:
+        return jsonify({"error": "Binance API keys not set in environment."}), 400
+    from exchange_connector.binance_connector import BinanceConnector
+    connector = BinanceConnector(api_key, api_secret, test_mode=False)
+    if tool == "get_spot_assets":
+        account_info = connector.get_account_info()
+        balances = [b for b in account_info.get("balances", []) if float(b.get("free", 0)) > 0 or float(b.get("locked", 0)) > 0]
+        return jsonify({"result": {"assets": balances}})
+    elif tool == "place_order":
+        symbol = params.get("symbol")
+        side = params.get("side")
+        quantity = params.get("quantity")
+        if not symbol or not side or not quantity:
+            return jsonify({"error": "Missing required parameters: symbol, side, quantity."}), 400
+        order_result = connector.place_order(symbol, side, quantity)
+        return jsonify({"result": {"order_result": order_result}})
+    else:
+        return jsonify({"error": f"Unknown tool: {tool}"}), 400
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5051)
