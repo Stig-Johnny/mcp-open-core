@@ -1,11 +1,11 @@
-# MCP Fusion Controller — Phase 22: Liquidity Mapping Fully Integrated
+# MCP Fusion Controller — Phase 23: ORCA-X Whale Predictive Model Integrated
 
 import os
 import json
 from data_ingestion.market_data import MarketDataIngestor
 from data_ingestion.macro_data import LiquidityFetcher
 from data_ingestion.news_parser import NewsParser
-from whale_monitor.whale_detector import WhaleDetector
+from whale_monitor.orca_x_engine import OrcaXWhaleForecast
 from liquidity_model.liquidity_core import LiquidityModel
 from liquidity_model.liquidity_pressure import LiquidityPressureCore
 from narrative_engine.narrative_model import NarrativeParser
@@ -20,11 +20,11 @@ from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
 
 class FusionController:
-    def __init__(self, whale_api_key=None, binance_api_key=None, binance_api_secret=None):
+    def __init__(self, binance_api_key=None, binance_api_secret=None):
         self.market_data = MarketDataIngestor()
         self.liquidity_fetcher = LiquidityFetcher()
         self.news_parser = NewsParser()
-        self.whale_detector = WhaleDetector(whale_api_key)
+        self.orca_x = OrcaXWhaleForecast()
         self.narrative_parser = NarrativeParser()
 
         self.liquidity_model = LiquidityModel()
@@ -63,13 +63,13 @@ class FusionController:
         market = self.market_data.fetch_price("BTCUSDT")
         stablecoins = self.liquidity_fetcher.fetch_stablecoin_data()
         news = self.news_parser.fetch_headlines()
-        whales = self.whale_detector.fetch_whale_data(currency="btc", min_value=500000)
+        whale_pressure = self.orca_x.compute_whale_pressure()
 
         return {
             "market": market,
             "stablecoins": stablecoins,
             "news": news,
-            "whales": whales
+            "whale_pressure": whale_pressure
         }
 
     def process_signals(self, data):
@@ -78,13 +78,12 @@ class FusionController:
         avg_sentiment = sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0
 
         liquidity_delta = self.liquidity_model.check_liquidity_inflow(data["stablecoins"], 1000000000)
-        whale_count = len(data["whales"]["transactions"]) if data["whales"].get("transactions") else 0
         sector_scores = self.rotation_engine.calculate_sector_scores()
 
         return {
             "sentiment": avg_sentiment,
             "liquidity": liquidity_delta,
-            "whales": whale_count,
+            "whales": data["whale_pressure"],
             "sectors": sector_scores
         }
 
@@ -134,7 +133,7 @@ class FusionController:
         liquidity_pressure_score = self.liquidity_pressure_core.compute_liquidity_pressure()
         print(f"🔎 LPI-X Liquidity Score: {liquidity_pressure_score}")
 
-        whale_netflow = -2000
+        whale_netflow = data["whale_pressure"] * 1000  # Simulated scaling
         liquidity_netflow = data["stablecoins"]["netflow"] if isinstance(data["stablecoins"], dict) else 0
 
         kill_switch_triggered, kill_flags = self.alpha_defense.check_kill_switch(signals, liquidity_netflow, whale_netflow)
@@ -153,8 +152,7 @@ class FusionController:
         print(f"🧠 Adaptive Learning Bias Adjustment: {bias}")
 
 if __name__ == "__main__":
-    WHALE_API_KEY = "INSERT_YOUR_WHALE_ALERT_API_KEY"
     BINANCE_API_KEY = "INSERT_YOUR_BINANCE_API_KEY"
     BINANCE_API_SECRET = "INSERT_YOUR_BINANCE_API_SECRET"
-    fusion = FusionController(whale_api_key=WHALE_API_KEY, binance_api_key=BINANCE_API_KEY, binance_api_secret=BINANCE_API_SECRET)
+    fusion = FusionController(binance_api_key=BINANCE_API_KEY, binance_api_secret=BINANCE_API_SECRET)
     fusion.run_cycle()
