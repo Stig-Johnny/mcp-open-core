@@ -1,33 +1,26 @@
-# MCP Phase 27 — KILL SWITCH v2.0 — Multi-Layer Capital Preservation System
+# MCP Phase 64 — Kill Switch Model v1.0
 
 class KillSwitch:
     def __init__(self):
-        # New thresholds introduced
-        self.liquidity_threshold = -0.03
-        self.whale_threshold = -1000
-        self.volatility_threshold = 0.6
-        self.corridor_threshold = -0.04
+        self.liquidity_threshold = -1.5
+        self.whale_netflow_threshold = -200
+        self.meta_sentiment_spread_threshold = 1.75
 
     def evaluate_risk(self, signals, liquidity_netflow, whale_netflow):
-        """
-        Master kill switch evaluation logic across layers
-        """
-        triggered_flags = []
+        kill_flags = []
 
-        # Traditional whale/liquidity triggers
         if liquidity_netflow < self.liquidity_threshold:
-            triggered_flags.append("LIQUIDITY DRAIN")
+            kill_flags.append("SEVERE LIQUIDITY DRAIN")
 
-        if whale_netflow < self.whale_threshold:
-            triggered_flags.append("WHALE NET SELL")
+        if whale_netflow < self.whale_netflow_threshold:
+            kill_flags.append("WHALE DISTRIBUTION CLUSTER")
 
-        # New volatility trigger
-        if signals["volatility"] > self.volatility_threshold:
-            triggered_flags.append("VOLATILITY SHOCK")
+        if signals.get("meta_sentiment_spread", 0) > self.meta_sentiment_spread_threshold:
+            kill_flags.append("NARRATIVE POLARIZATION RISK")
 
-        # New liquidity corridor compression
-        if signals["corridor"] < self.corridor_threshold:
-            triggered_flags.append("CORRIDOR CONTRACTION")
-
-        kill_switch_triggered = len(triggered_flags) > 0
-        return kill_switch_triggered, triggered_flags
+        if kill_flags:
+            print(f"🚨 Kill Switch Triggered: {kill_flags}")
+            return True, kill_flags
+        else:
+            print("✅ Kill Switch: All Clear")
+            return False, []
