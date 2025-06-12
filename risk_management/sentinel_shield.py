@@ -1,18 +1,13 @@
-# MCP Phase 43 — Sentinel-Shield v1.0
+# MCP Phase 51 — Sentinel-Shield v1.0
 
 class SentinelShield:
     def __init__(self):
-        self.last_spike = 0
+        self.spike_threshold = "HIGH SPIKE RISK"
 
-    def evaluate_defense(self, sentinel_spike_value):
-        # Sentinel Spike is a categorical signal
-        self.last_spike = sentinel_spike_value
-
-        if sentinel_spike_value == "HIGH SPIKE RISK":
-            print("🛡 Sentinel Shield Trigger: DEFENSIVE MODE ENGAGED")
+    def evaluate_defense(self, sentinel_spike_signal):
+        if sentinel_spike_signal == self.spike_threshold:
+            print("🛡 Sentinel-Shield: DEFENSIVE_MODE — Aggressive entries suspended.")
             return "DEFENSIVE_MODE"
-        elif sentinel_spike_value == "MEDIUM SPIKE WARNING":
-            print("⚠ Sentinel Shield Monitor: CAUTION MODE ACTIVE")
-            return "CAUTION_MODE"
         else:
-            return "NORMAL_OPERATION"
+            print("🛡 Sentinel-Shield: NORMAL — Entries allowed.")
+            return "NORMAL"
