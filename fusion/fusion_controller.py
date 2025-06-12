@@ -9,6 +9,7 @@ from narrative_engine.narrative_model import NarrativeParser
 from sector_rotation.rotation_engine import SectorRotationEngine
 from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
+from datastore.state_logger import StateLogger
 
 class FusionController:
     def __init__(self, whale_api_key=None):
@@ -26,6 +27,9 @@ class FusionController:
         # Risk Management
         self.profit_ladder = ProfitLadder()
         self.kill_switch = KillSwitch()
+
+        # Sovereign Logger
+        self.logger = StateLogger()
 
     def collect_data(self):
         print("Collecting Data...")
@@ -46,7 +50,7 @@ class FusionController:
         sentiment_scores = [self.narrative_parser.parse_news(article['title']) for article in data["news"]]
         avg_sentiment = sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0
 
-        liquidity_delta = self.liquidity_model.check_liquidity_inflow(data["stablecoins"], 1000000000) # placeholder previous supply
+        liquidity_delta = self.liquidity_model.check_liquidity_inflow(data["stablecoins"], 1000000000)
         whale_count = len(data["whales"]["transactions"]) if data["whales"].get("transactions") else 0
         sector_scores = self.rotation_engine.calculate_sector_scores()
 
@@ -74,7 +78,6 @@ class FusionController:
         if signals["sectors"]["DeFi"] > 50:
             decisions["rotation"] = "DEPLOY TO DEFI"
 
-        # Simple profit ladder evaluation example
         profit_targets = self.profit_ladder.evaluate_profit_targets(1000)
 
         return {
@@ -94,8 +97,9 @@ class FusionController:
         print(f"Profit Ladder: {actions['profit_targets']}")
         print("-------------------------\n")
 
+        self.logger.log_cycle(data, signals, actions["decisions"])
+
 if __name__ == "__main__":
-    # NOTE: Insert your Whale Alert API Key here
     WHALE_API_KEY = "INSERT_YOUR_API_KEY"
     fusion = FusionController(whale_api_key=WHALE_API_KEY)
     fusion.run_cycle()
