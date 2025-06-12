@@ -30,6 +30,7 @@ from datastore.state_logger import StateLogger
 from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
 
+
 class FusionController:
     def __init__(self, binance_api_key=None, binance_api_secret=None):
         self.market_data = MarketDataIngestor()
@@ -144,7 +145,6 @@ class FusionController:
             "sector_bias": data["sector_bias"],
             "narrative_acceleration": data["narrative_acceleration"]
         }
-
     def decide_actions(self, signals):
         fusion_score = self.quantum_node.compute_fusion_score(signals)
         decisions = {}
