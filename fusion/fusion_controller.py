@@ -1,5 +1,7 @@
 # fusion/fusion_controller.py
 
+import os
+import json
 from data_ingestion.market_data import MarketDataIngestor
 from data_ingestion.macro_data import LiquidityFetcher
 from data_ingestion.news_parser import NewsParser
@@ -13,23 +15,36 @@ from datastore.state_logger import StateLogger
 
 class FusionController:
     def __init__(self, whale_api_key=None):
-        # Data Ingestion Modules
         self.market_data = MarketDataIngestor()
         self.liquidity_fetcher = LiquidityFetcher()
         self.news_parser = NewsParser()
         self.whale_detector = WhaleDetector(whale_api_key)
         self.narrative_parser = NarrativeParser()
 
-        # Signal Processors
         self.liquidity_model = LiquidityModel()
         self.rotation_engine = SectorRotationEngine()
 
-        # Risk Management
         self.profit_ladder = ProfitLadder()
         self.kill_switch = KillSwitch()
 
-        # Sovereign Logger
         self.logger = StateLogger()
+        self.adaptive_weights = self.load_adaptive_weights()
+
+    def load_adaptive_weights(self):
+        file_path = "adaptive/weights.json"
+        if os.path.exists(file_path):
+            with open(file_path) as f:
+                weights = json.load(f)
+            print(f"✅ Loaded Adaptive Weights: {weights}")
+            return weights
+        else:
+            print("⚠ No adaptive weights found. Using defaults.")
+            return {
+                "sentiment": 1.0,
+                "liquidity": 1.0,
+                "whales": 1.0,
+                "sectors": 1.0
+            }
 
     def collect_data(self):
         print("Collecting Data...")
@@ -63,19 +78,24 @@ class FusionController:
 
     def decide_actions(self, signals):
         print("Making Tactical Decisions...")
-
         decisions = {}
 
-        if signals["liquidity"] > 100_000_000:
-            decisions["liquidity"] = "ACCUMULATE"
+        # Apply adaptive weights
+        sentiment_trigger = self.adaptive_weights["sentiment"]
+        liquidity_trigger = self.adaptive_weights["liquidity"]
+        whale_trigger = self.adaptive_weights["whales"]
+        sector_trigger = self.adaptive_weights["sectors"]
 
-        if signals["sentiment"] > 3:
+        if signals["sentiment"] > sentiment_trigger:
             decisions["sentiment"] = "BULLISH"
 
-        if signals["whales"] > 5:
+        if signals["liquidity"] > liquidity_trigger:
+            decisions["liquidity"] = "ACCUMULATE"
+
+        if signals["whales"] > whale_trigger:
             decisions["whales"] = "LARGE ACCUMULATION"
 
-        if signals["sectors"]["DeFi"] > 50:
+        if signals["sectors"]["DeFi"] > sector_trigger:
             decisions["rotation"] = "DEPLOY TO DEFI"
 
         profit_targets = self.profit_ladder.evaluate_profit_targets(1000)
@@ -86,12 +106,12 @@ class FusionController:
         }
 
     def run_cycle(self):
-        print("Running Sovereign Fusion Cycle...\n")
+        print("Running Sovereign Adaptive Fusion Cycle...\n")
         data = self.collect_data()
         signals = self.process_signals(data)
         actions = self.decide_actions(signals)
 
-        print("\n--- MCP Fusion Report ---")
+        print("\n--- MCP Adaptive Fusion Report ---")
         print(f"Signals: {signals}")
         print(f"Decisions: {actions['decisions']}")
         print(f"Profit Ladder: {actions['profit_targets']}")
