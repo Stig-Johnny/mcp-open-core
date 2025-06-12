@@ -2,14 +2,15 @@
 
 """
 MCP Open Core - On-Chain Data Ingestion Module
-Fetches whale transactions by scraping whale-alert.io (public, rate-limited, for prototyping).
+Fetches whale transactions from whale-alert.io/data.json and parses CSV-like alert strings.
 """
 
 import requests
-from bs4 import BeautifulSoup
+import csv
+import io
 
 class OnChainDataIngestor:
-    def __init__(self, url="https://whale-alert.io/"):
+    def __init__(self, url="https://whale-alert.io/data.json?alerts=9&prices=BTC&hodl=bitcoin%2CBTC&potential_profit=bitcoin%2CBTC&average_buy_price=bitcoin%2CBTC&realized_profit=bitcoin%2CBTC&volume=bitcoin%2CBTC&news=true"):
         self.url = url
 
     def fetch_whale_transactions(self, limit=5):
@@ -18,22 +19,27 @@ class OnChainDataIngestor:
             if response.status_code != 200:
                 print(f"[OnChainDataIngestor] HTTP error: {response.status_code}")
                 return []
-            soup = BeautifulSoup(response.text, "html.parser")
+            data = response.json()
+            alerts = data.get("alerts", [])
             txs = []
-            for row in soup.select(".table tbody tr")[:limit]:
-                cols = row.find_all("td")
-                if len(cols) >= 5:
+            for alert_str in alerts[:limit]:
+                # Parse CSV-like string
+                reader = csv.reader(io.StringIO(alert_str))
+                fields = next(reader)
+                if len(fields) >= 6:
                     tx = {
-                        "time": cols[0].get_text(strip=True),
-                        "amount": cols[1].get_text(strip=True),
-                        "symbol": cols[2].get_text(strip=True),
-                        "from": cols[3].get_text(strip=True),
-                        "to": cols[4].get_text(strip=True)
+                        "timestamp": fields[0],
+                        "emoji": fields[1],
+                        "amount": fields[2],
+                        "usd_value": fields[3],
+                        "description": fields[4],
+                        "link": fields[5],
+                        "source": "whale-alert.io"
                     }
                     txs.append(tx)
             return txs
         except Exception as e:
-            print(f"[OnChainDataIngestor] Scrape error: {e}")
+            print(f"[OnChainDataIngestor] JSON parse error: {e}")
             return []
 
 if __name__ == "__main__":

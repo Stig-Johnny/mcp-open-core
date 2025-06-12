@@ -128,6 +128,15 @@ These are visible in the dashboard at `/mcp/dashboard` and available via the `/l
 
 ---
 
+## 🆕 Robust Whale Data Integration
+
+The MCP dashboard and API now display live on-chain whale transactions using the whale-alert.io JSON endpoint, with robust parsing of alert strings for structured, real-time data.
+
+- Whale data is visible in the On-Chain Whale Data section of the dashboard.
+- No API key required; data is parsed directly from public JSON.
+
+---
+
 ## 🧪 Sovereign Modules Included (Phases 1-82)
 
 - fusion_node.py  
