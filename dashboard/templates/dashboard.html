@@ -31,7 +31,21 @@
                 document.getElementById('market_price').innerText = data.market && data.market.price ? data.market.price : 'N/A';
                 document.getElementById('profit_targets').innerText = data.decisions && data.decisions.profit_targets ? data.decisions.profit_targets.join(', ') : 'N/A';
                 document.getElementById('orderbook').innerText = data.order_book ? JSON.stringify(data.order_book, null, 2) : 'N/A';
+                document.getElementById('calibration_bias').innerText = data.fusion_signals && data.fusion_signals.calibration_bias !== undefined ? data.fusion_signals.calibration_bias : 'N/A';
                 document.getElementById('error').innerText = '';
+            });
+        }
+
+        function adjustCalibration(amount) {
+            fetch('http://localhost:5051/adjust_calibration', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adjustment: amount })
+            })
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('calibration_bias').innerText = data.updated_bias;
+                refreshData();
             });
         }
     </script>
@@ -54,6 +68,11 @@
         <div class="section orderbook">
             <span class="label">Order Book (Top 5):</span>
             <pre id="orderbook">{{ data.order_book|tojson(indent=2) if data.order_book else 'N/A' }}</pre>
+        </div>
+        <div class="section">
+            <span class="label">Calibration Bias:</span> <span class="value" id="calibration_bias">{{ data.fusion_signals.calibration_bias if data.fusion_signals and 'calibration_bias' in data.fusion_signals else 'N/A' }}</span>
+            <button onclick="adjustCalibration(0.1)">+ Increase</button>
+            <button onclick="adjustCalibration(-0.1)">- Decrease</button>
         </div>
         <div class="section">
             <button onclick="refreshData()">Refresh</button>

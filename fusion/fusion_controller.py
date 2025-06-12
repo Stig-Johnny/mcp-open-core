@@ -31,6 +31,7 @@ from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
 from core.calibration_engine import CalibrationEngine
 from adaptive.reinforcement_model import ReinforcementModel
+from alerting.email_alert import send_posture_alert
 
 
 class FusionController:
@@ -168,13 +169,17 @@ class FusionController:
     def decide_actions(self, signals):
         fusion_score = self.quantum_node.compute_fusion_score(signals)
         decisions = {}
-
+        # Track last posture (no alerting)
+        last_posture = getattr(self, '_last_posture', None)
         if fusion_score > 3 and signals["macro_bias"] >= 0:
-            decisions["FUSION_BIAS"] = "RISK-ON MODE"
+            posture = "RISK-ON MODE"
         elif fusion_score < 0 or signals["macro_bias"] < 0:
-            decisions["FUSION_BIAS"] = "DEFENSIVE MODE"
+            posture = "DEFENSIVE MODE"
         else:
-            decisions["FUSION_BIAS"] = "NEUTRAL MONITORING"
+            posture = "NEUTRAL MONITORING"
+        decisions["FUSION_BIAS"] = posture
+        if last_posture != posture:
+            self._last_posture = posture
 
         if signals["sentinel_spike"] == "HIGH SPIKE RISK":
             decisions["SENTINEL_ALERT"] = "IMMINENT MOVE DETECTED"
