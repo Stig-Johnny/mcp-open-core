@@ -1,4 +1,4 @@
-# MCP Sovereign Fusion Controller — Phase 15 Full Execution Build
+# MCP Sovereign Fusion Controller — Phase 18: Alpha Defense Shield Integrated
 
 import os
 import json
@@ -11,6 +11,7 @@ from narrative_engine.narrative_model import NarrativeParser
 from sector_rotation.rotation_engine import SectorRotationEngine
 from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
+from risk_management.alpha_defense import AlphaDefenseShield
 from datastore.state_logger import StateLogger
 from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
@@ -28,6 +29,7 @@ class FusionController:
 
         self.profit_ladder = ProfitLadder()
         self.kill_switch = KillSwitch()
+        self.alpha_defense = AlphaDefenseShield()
 
         self.logger = StateLogger()
         self.execution_engine = ExecutionEngine()
@@ -119,6 +121,16 @@ class FusionController:
         print(f"Decisions: {actions['decisions']}")
         print(f"Profit Ladder: {actions['profit_targets']}")
         print("-------------------------\n")
+
+        # Kill Switch Logic (ALPHA DEFENSE SHIELD)
+        whale_netflow = -2000  # Simulated whale flow (replace with real)
+        liquidity_netflow = data["stablecoins"]["netflow"] if isinstance(data["stablecoins"], dict) else 0
+
+        kill_switch_triggered, kill_flags = self.alpha_defense.check_kill_switch(signals, liquidity_netflow, whale_netflow)
+
+        if kill_switch_triggered:
+            print(f"🚨 ALPHA DEFENSE TRIGGERED: {kill_flags}")
+            return  # HALT EXECUTION
 
         self.execution_engine.execute(signals)
         self.execution_router.translate_and_execute(signals)
