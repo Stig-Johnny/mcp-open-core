@@ -1,26 +1,28 @@
-# MCP Phase 30 — Quantum Node v1.0 — Signal Fusion Engine
+# MCP Phase 41 — Quantum Node Fusion Score v1.0 (Weighted Model)
 
 class QuantumNodeFusion:
     def __init__(self):
-        # Assign initial signal weights
+        # Default adaptive weights (can be adjusted live)
         self.weights = {
             "sentiment": 1.0,
-            "liquidity": 1.0,
-            "whales": 1.0,
-            "sectors": 1.0,
-            "volatility": -1.0,  # higher vol = risk-off
-            "corridor": 1.0,
-            "sentiment_delta": 1.0
+            "liquidity": 1.2,
+            "whales": 1.4,
+            "sector_bias": 1.3,
+            "volatility": 0.8,
+            "narrative_acceleration": 1.5,
+            "meta_sentiment_spread": 1.1
         }
 
     def compute_fusion_score(self, signals):
-        fusion_score = 0.0
-        for key, weight in self.weights.items():
-            signal_value = signals.get(key, 0)
-            if isinstance(signal_value, dict):  # For sector dict, take average
-                signal_value = sum(signal_value.values()) / len(signal_value)
-            fusion_score += signal_value * weight
-        fusion_score = round(fusion_score, 3)
+        score = 0
 
-        print(f"🧮 Quantum Fusion Score: {fusion_score}")
-        return fusion_score
+        score += self.weights["sentiment"] * signals.get("sentiment", 0)
+        score += self.weights["liquidity"] * signals.get("liquidity", 0)
+        score += self.weights["whales"] * signals.get("whales", 0)
+        score += self.weights["sector_bias"] * signals.get("sector_bias", 0)
+        score += self.weights["volatility"] * (-signals.get("volatility", 0))  # inverse weighting to volatility
+        score += self.weights["narrative_acceleration"] * (1 if signals.get("narrative_acceleration") == "STRONG ACCELERATION" else 0)
+        score += self.weights["meta_sentiment_spread"] * (-signals.get("meta_sentiment_spread", 0))
+
+        print(f"⚛ Fusion Score (Weighted): {score:.2f}")
+        return score
