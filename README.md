@@ -1,41 +1,73 @@
-# MCP Open Core v1.0
+# MCP Open Core — Sovereign-Class Quant Intelligence Platform
 
-Welcome to MCP — the **first sovereign-class open-source AI quant framework** for crypto markets.
+Welcome to MCP Open Core — the public, open-source foundation of the institutional-grade MCP Sovereign Fusion System.
 
-MCP Open Core enables:
-
-- Narrative Parsing & Sentiment Analysis
-- Whale Flow Monitoring
-- Liquidity Modeling
-- Sector Rotation Logic
-- Adaptive Risk Management
-- Kill Switch & Profit Ladder Templates
-
-⚠️ This repository represents the **Open Core**, not the full private MCP Fusion architecture (ORCA-X, SIGMA-WAVE, LPI-360, Trinity Fusion).
-
-## Why MCP Open Core?
-
-To build a transparent, extensible, sovereign-grade quant research platform while retaining private alpha protection for institutional-grade sovereign funds.
-
-## Architecture (v1.0)
-
-- `data_ingestion/` — Pulls live data from exchanges, chains, macro, and news.
-- `narrative_engine/` — Sentiment parsing modules.
-- `whale_monitor/` — Captures basic whale activity.
-- `liquidity_model/` — Stablecoin expansion/contraction modeling.
-- `sector_rotation/` — Dynamic sector rebalancing logic.
-- `risk_management/` — Profit Ladder & Kill Switch templates.
-- `datastore/` — Sovereign state memory & logs.
-
-## License
-
-Licensed under **MCP Open Sovereign License v1.0**.
-
-## Status
-
-> MCP Open Core is LIVE — May 2025  
-> MCP Private Fusion Core — Sovereign Protected
+This repository contains a modular scaffold replicating the core logic architecture of MCP v1.0 and Quantum Apex v2.0, designed for educational, research, and private fund exploration purposes.
 
 ---
 
-Built under Sovereign Command by Stig-Johnny 🚀👑
+## 🧠 Core Architecture Blueprint
+
+```
+/architecture/         | System blueprints & design principles
+/data_ingestion/       | Market, on-chain, macro & news ingestion
+/narrative_engine/     | Sentiment parsing module (news + social)
+/whale_monitor/        | Whale flow detection & monitoring
+/liquidity_model/      | Liquidity cycle tracking (LPI-360)
+/sector_rotation/      | Sector scoring engine (rotational logic)
+/risk_management/      | Profit Ladder + Kill Switch defensive AI
+/datastore/            | Historical Fusion Logs (sovereign-grade)
+/adaptive/             | Self-learning AI Calibration Engine
+/fusion/               | Central Fusion Orchestration Engine
+/scheduler/            | Autonomous Meta-Scheduler (daily ops)
+/dashboard/            | Sovereign Operator Control Tower Interface
+```
+
+---
+
+## 🚀 Deployment Instructions
+
+### ✅ 1️⃣ Install All Required Dependencies:
+
+```bash
+pip install requests flask feedparser schedule tweepy
+```
+
+(Optional: Use a virtual environment for clean installation)
+
+---
+
+### ✅ 2️⃣ Run Sovereign Manual Fusion Cycle
+
+```bash
+python fusion/fusion_controller.py
+```
+
+---
+
+### ✅ 3️⃣ Run Adaptive Learning Engine
+
+```bash
+python adaptive/learning_engine.py
+```
+
+---
+
+## 🧮 Summary
+
+This Open Core release allows researchers, developers and private funds to experiment with the architecture behind the MCP Sovereign Quant Intelligence Platform.
+
+> Note: This public release intentionally excludes private MCP v2.0 Quantum Apex proprietary AI models, live sentiment streams, whale prediction weights, and sovereign-grade Fusion Stack calibration datasets.
+
+---
+
+## 📜 License
+
+This open-source MCP Open Core release is provided under:
+**Sovereign Open Research License v1.0 (SORL)** — see LICENSE file.
+
+For commercial licensing or institutional-grade full stack access, contact the MCP Sovereign Core maintainers.
+
+---
+
+> 🧭 Mission: Democratize sovereign-grade crypto quant research and foster next-generation alpha generation technologies.
