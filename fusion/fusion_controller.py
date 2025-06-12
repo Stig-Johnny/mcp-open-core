@@ -1,4 +1,4 @@
-# MCP Sovereign Fusion Controller — Phase 18: Alpha Defense Shield Integrated
+# MCP Fusion Controller — Phase 20: Full AI Self-Learning Build
 
 import os
 import json
@@ -12,6 +12,7 @@ from sector_rotation.rotation_engine import SectorRotationEngine
 from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from risk_management.alpha_defense import AlphaDefenseShield
+from adaptive.self_learning import SelfLearningEngine
 from datastore.state_logger import StateLogger
 from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
@@ -30,6 +31,7 @@ class FusionController:
         self.profit_ladder = ProfitLadder()
         self.kill_switch = KillSwitch()
         self.alpha_defense = AlphaDefenseShield()
+        self.self_learning = SelfLearningEngine()
 
         self.logger = StateLogger()
         self.execution_engine = ExecutionEngine()
@@ -122,19 +124,23 @@ class FusionController:
         print(f"Profit Ladder: {actions['profit_targets']}")
         print("-------------------------\n")
 
-        # Kill Switch Logic (ALPHA DEFENSE SHIELD)
-        whale_netflow = -2000  # Simulated whale flow (replace with real)
+        whale_netflow = -2000  # Simulated whale flow (replace in production)
         liquidity_netflow = data["stablecoins"]["netflow"] if isinstance(data["stablecoins"], dict) else 0
 
         kill_switch_triggered, kill_flags = self.alpha_defense.check_kill_switch(signals, liquidity_netflow, whale_netflow)
 
         if kill_switch_triggered:
             print(f"🚨 ALPHA DEFENSE TRIGGERED: {kill_flags}")
-            return  # HALT EXECUTION
+            return
 
         self.execution_engine.execute(signals)
         self.execution_router.translate_and_execute(signals)
         self.logger.log_cycle(data, signals, actions["decisions"])
+
+        simulated_pnl = 100  # Replace with real realized pnl later
+        self.self_learning.log_cycle(signals, actions["decisions"], simulated_pnl)
+        bias = self.self_learning.compute_bias_adjustments()
+        print(f"🧠 Adaptive Learning Bias Adjustment: {bias}")
 
 if __name__ == "__main__":
     WHALE_API_KEY = "INSERT_YOUR_WHALE_ALERT_API_KEY"
