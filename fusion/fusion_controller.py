@@ -1,4 +1,4 @@
-# MCP Fusion Controller — Phase 20: Full AI Self-Learning Build
+# MCP Sovereign Fusion Controller — Phase 21 Orbital Mode Active
 
 import os
 import json
@@ -13,6 +13,7 @@ from risk_management.profit_ladder import ProfitLadder
 from risk_management.kill_switch import KillSwitch
 from risk_management.alpha_defense import AlphaDefenseShield
 from adaptive.self_learning import SelfLearningEngine
+from adaptive.orbital_controller import OrbitalController
 from datastore.state_logger import StateLogger
 from execution.execution_engine import ExecutionEngine
 from execution.execution_router import ExecutionRouter
@@ -32,6 +33,7 @@ class FusionController:
         self.kill_switch = KillSwitch()
         self.alpha_defense = AlphaDefenseShield()
         self.self_learning = SelfLearningEngine()
+        self.orbital_controller = OrbitalController()
 
         self.logger = StateLogger()
         self.execution_engine = ExecutionEngine()
@@ -114,6 +116,9 @@ class FusionController:
 
     def run_cycle(self):
         print("Running Sovereign Adaptive Fusion Cycle...\n")
+        self.orbital_controller.update_adaptive_weights()
+        self.adaptive_weights = self.load_adaptive_weights()
+
         data = self.collect_data()
         signals = self.process_signals(data)
         actions = self.decide_actions(signals)
@@ -124,7 +129,7 @@ class FusionController:
         print(f"Profit Ladder: {actions['profit_targets']}")
         print("-------------------------\n")
 
-        whale_netflow = -2000  # Simulated whale flow (replace in production)
+        whale_netflow = -2000  # Simulated
         liquidity_netflow = data["stablecoins"]["netflow"] if isinstance(data["stablecoins"], dict) else 0
 
         kill_switch_triggered, kill_flags = self.alpha_defense.check_kill_switch(signals, liquidity_netflow, whale_netflow)
@@ -137,7 +142,7 @@ class FusionController:
         self.execution_router.translate_and_execute(signals)
         self.logger.log_cycle(data, signals, actions["decisions"])
 
-        simulated_pnl = 100  # Replace with real realized pnl later
+        simulated_pnl = 100  # Placeholder
         self.self_learning.log_cycle(signals, actions["decisions"], simulated_pnl)
         bias = self.self_learning.compute_bias_adjustments()
         print(f"🧠 Adaptive Learning Bias Adjustment: {bias}")
