@@ -1,4 +1,4 @@
-# MCP Fusion Controller — Phase 25: Liquidity Corridor AI Fully Integrated
+# MCP Fusion Controller — Phase 26: Profit Ladder AI Fully Integrated
 
 import os
 import json
@@ -125,7 +125,10 @@ class FusionController:
         if signals["corridor"] < -0.03:
             decisions["corridor"] = "LIQUIDITY CONTRACTING"
 
-        profit_targets = self.profit_ladder.evaluate_profit_targets(1000)
+        profit_targets = self.profit_ladder.evaluate_profit_targets(
+            portfolio_value=1000,
+            sigma_score=signals["volatility"]
+        )
 
         return {
             "decisions": decisions,
