@@ -1,49 +1,31 @@
-# MCP Phase 48 — Quantum Node Fusion v2.0
+# MCP Phase 76 — Fusion Node v1.0 (with Reinforcement Integration)
 
-class QuantumNodeFusion:
-    def __init__(self):
-        # Sovereign fusion weights (these will be made adaptive in v3.0)
-        self.weights = {
-            "sentiment": 1.0,
-            "liquidity": 1.2,
-            "whales": 1.4,
-            "sector_bias": 1.2,
-            "meta_sentiment": 1.5,
-            "orbital_shock": 1.7,
-            "narrative_acceleration": 1.3
-        }
+class FusionNode:
+    def __init__(self, calibration_engine, reinforcement_model):
+        self.calibration_engine = calibration_engine
+        self.reinforcement_model = reinforcement_model
 
     def compute_fusion_score(self, signals):
-        score = 0
+        # Weighted sovereign fusion score
+        score = (
+            signals["sentiment"] * 1.0
+            + signals["liquidity"] * 1.2
+            + signals["whales"] * 1.3
+            + signals["macro_bias"] * 1.0
+            + signals["sector_bias"] * 1.0
+            + (1 if signals["narrative_acceleration"] == "STRONG ACCELERATION" else 0.5 if signals["narrative_acceleration"] == "BUILDING MOMENTUM" else 0)
+            + (1 if signals["liquidity_shock"] == "LIQUIDITY DRAIN WARNING" else 0)
+            + (1 if signals["whale_cluster"] == "AGGRESSIVE ACCUMULATION" else -1 if signals["whale_cluster"] == "AGGRESSIVE DISTRIBUTION" else 0)
+            + signals["meta_sentiment"] * 1.0
+            - signals["meta_sentiment_spread"] * 0.7
+            - (0.5 if signals["sentinel_spike"] == "HIGH SPIKE RISK" else 0)
+        )
 
-        # Sentiment
-        score += self.weights["sentiment"] * signals.get("sentiment", 0)
+        # Apply sovereign calibration bias first
+        calibrated_score = self.calibration_engine.apply_calibration(score)
 
-        # Liquidity
-        score += self.weights["liquidity"] * signals.get("liquidity", 0)
+        # Apply recursive reinforcement bias second
+        final_score = self.reinforcement_model.apply_bias(calibrated_score)
 
-        # Whale Pressure (normalized)
-        whale_component = signals.get("whales", 0) / 300
-        score += self.weights["whales"] * whale_component
-
-        # Sector bias
-        score += self.weights["sector_bias"] * signals.get("sector_bias", 0)
-
-        # Meta-Sentiment spread (polarization = volatility risk)
-        meta_spread_component = 1 - min(signals.get("meta_sentiment_spread", 1), 2)
-        score += self.weights["meta_sentiment"] * meta_spread_component
-
-        # Orbital Shock
-        orbital = signals.get("orbital_shock", "STABLE")
-        if orbital == "HIGH SHOCK WARNING":
-            score -= self.weights["orbital_shock"]
-        elif orbital == "MODERATE SHOCK BUILD-UP":
-            score -= self.weights["orbital_shock"] * 0.5
-
-        # Narrative Acceleration
-        accel = signals.get("narrative_acceleration", "FLAT")
-        if accel == "STRONG ACCELERATION":
-            score += self.weights["narrative_acceleration"]
-
-        print(f"🧮 Quantum Fusion Score: {round(score, 3)}")
-        return round(score, 3)
+        print(f"🧬 Final Fusion Score (with reinforcement): {final_score}")
+        return final_score
